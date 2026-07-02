@@ -47,6 +47,27 @@ public class PrometeoCarController : MonoBehaviour
                                     // however, you must notice that the higher this value is, the more unstable the car becomes.
                                     // Usually the y value goes from 0 to 1.5.
 
+    //GEAR SYSTEM
+
+      public enum TransmissionMode { Automatic, SequentialGear, ManualClutch }
+
+      [Space(20)]
+      //[Header("GEAR SYSTEM")]
+      [Space(10)]
+      public TransmissionMode transmissionMode = TransmissionMode.Automatic;
+      public int numberOfGears = 6;
+      public float[] gearRatios = new float[] { 3.5f, 2.5f, 1.8f, 1.4f, 1.1f, 0.9f };
+      public float reverseGearRatio = 3.2f;
+      public float finalDriveRatio = 3.5f;
+      [Range(4000, 12000)]
+      public float maxEngineRPM = 8000f;
+      [Range(500, 1500)]
+      public float idleRPM = 800f;
+      [Range(4000, 10000)]
+      public float shiftUpRPM = 6500f;    // Automatic shifts up at this RPM
+      [Range(1000, 4000)]
+      public float shiftDownRPM = 2500f;  // Automatic shifts down at this RPM
+
     //WHEELS
 
       //[Header("WHEELS")]
@@ -68,60 +89,7 @@ public class PrometeoCarController : MonoBehaviour
       public GameObject rearRightMesh;
       public WheelCollider rearRightCollider;
 
-    //PARTICLE SYSTEMS
 
-      [Space(20)]
-      //[Header("EFFECTS")]
-      [Space(10)]
-      //The following variable lets you to set up particle systems in your car
-      public bool useEffects = false;
-
-      // The following particle systems are used as tire smoke when the car drifts.
-      public ParticleSystem RLWParticleSystem;
-      public ParticleSystem RRWParticleSystem;
-
-      [Space(10)]
-      // The following trail renderers are used as tire skids when the car loses traction.
-      public TrailRenderer RLWTireSkid;
-      public TrailRenderer RRWTireSkid;
-
-    //SPEED TEXT (UI)
-
-      [Space(20)]
-      //[Header("UI")]
-      [Space(10)]
-      //The following variable lets you to set up a UI text to display the speed of your car.
-      public bool useUI = false;
-      public Text carSpeedText; // Used to store the UI object that is going to show the speed of the car.
-
-    //SOUNDS
-
-      [Space(20)]
-      //[Header("Sounds")]
-      [Space(10)]
-      //The following variable lets you to set up sounds for your car such as the car engine or tire screech sounds.
-      public bool useSounds = false;
-      public AudioSource carEngineSound; // This variable stores the sound of the car engine.
-      public AudioSource tireScreechSound; // This variable stores the sound of the tire screech (when the car is drifting).
-      float initialCarEngineSoundPitch; // Used to store the initial pitch of the car engine sound.
-
-    //CONTROLS
-
-      [Space(20)]
-      //[Header("CONTROLS")]
-      [Space(10)]
-      //The following variables lets you to set up touch controls for mobile devices.
-      public bool useTouchControls = false;
-      public GameObject throttleButton;
-      PrometeoTouchInput throttlePTI;
-      public GameObject reverseButton;
-      PrometeoTouchInput reversePTI;
-      public GameObject turnRightButton;
-      PrometeoTouchInput turnRightPTI;
-      public GameObject turnLeftButton;
-      PrometeoTouchInput turnLeftPTI;
-      public GameObject handbrakeButton;
-      PrometeoTouchInput handbrakePTI;
 
     //CAR DATA
 
@@ -131,6 +99,21 @@ public class PrometeoCarController : MonoBehaviour
       public bool isDrifting; // Used to know whether the car is drifting or not.
       [HideInInspector]
       public bool isTractionLocked; // Used to know whether the traction of the car is locked or not.
+
+    //GEAR DATA (public read-only properties for UIManager)
+
+      private int currentGear = 1;        // 0 = neutral, -1 = reverse, 1-6 = forward gears
+      private float engineRPM;
+      private bool clutchEngaged = true;   // true = clutch released (power flows), false = clutch pressed (disengaged)
+      private float clutchInput;           // 0 = clutch released, 1 = clutch fully pressed
+      private float lastShiftTime;
+      private float shiftCooldown = 0.5f;
+
+      // Public read-only properties for UIManager
+      public int CurrentGear => currentGear;
+      public float EngineRPM => engineRPM;
+      public TransmissionMode CurrentTransmissionMode => transmissionMode;
+      public bool ClutchEngaged => clutchEngaged;
 
     //PRIVATE VARIABLES
 
@@ -144,7 +127,6 @@ public class PrometeoCarController : MonoBehaviour
       float localVelocityZ;
       float localVelocityX;
       bool deceleratingCar;
-      bool touchControlsSetup = false;
       /*
       The following variables are used to store information about sideways friction of the wheels (such as
       extremumSlip,extremumValue, asymptoteSlip, asymptoteValue and stiffness). We change this values to
@@ -225,66 +207,7 @@ public class PrometeoCarController : MonoBehaviour
         RRwheelFriction.asymptoteValue = rearRightCollider.sidewaysFriction.asymptoteValue;
         RRwheelFriction.stiffness = rearRightCollider.sidewaysFriction.stiffness;
 
-        // We save the initial pitch of the car engine sound.
-        if(carEngineSound != null){
-          initialCarEngineSoundPitch = carEngineSound.pitch;
-        }
 
-        // We invoke 2 methods inside this script. CarSpeedUI() changes the text of the UI object that stores
-        // the speed of the car and CarSounds() controls the engine and drifting sounds. Both methods are invoked
-        // in 0 seconds, and repeatedly called every 0.1 seconds.
-        if(useUI){
-          InvokeRepeating("CarSpeedUI", 0f, 0.1f);
-        }else if(!useUI){
-          if(carSpeedText != null){
-            carSpeedText.text = "0";
-          }
-        }
-
-        if(useSounds){
-          InvokeRepeating("CarSounds", 0f, 0.1f);
-        }else if(!useSounds){
-          if(carEngineSound != null){
-            carEngineSound.Stop();
-          }
-          if(tireScreechSound != null){
-            tireScreechSound.Stop();
-          }
-        }
-
-        if(!useEffects){
-          if(RLWParticleSystem != null){
-            RLWParticleSystem.Stop();
-          }
-          if(RRWParticleSystem != null){
-            RRWParticleSystem.Stop();
-          }
-          if(RLWTireSkid != null){
-            RLWTireSkid.emitting = false;
-          }
-          if(RRWTireSkid != null){
-            RRWTireSkid.emitting = false;
-          }
-        }
-
-        if(useTouchControls){
-          if(throttleButton != null && reverseButton != null &&
-          turnRightButton != null && turnLeftButton != null
-          && handbrakeButton != null){
-
-            throttlePTI = throttleButton.GetComponent<PrometeoTouchInput>();
-            reversePTI = reverseButton.GetComponent<PrometeoTouchInput>();
-            turnLeftPTI = turnLeftButton.GetComponent<PrometeoTouchInput>();
-            turnRightPTI = turnRightButton.GetComponent<PrometeoTouchInput>();
-            handbrakePTI = handbrakeButton.GetComponent<PrometeoTouchInput>();
-            touchControlsSetup = true;
-
-          }else{
-            String ex = "Touch controls are not completely set up. You must drag and drop your scene buttons in the" +
-            " PrometeoCarController component.";
-            Debug.LogWarning(ex);
-          }
-        }
 
         SyncWheelMeshesToColliders();
         SnapCarToGround();
@@ -415,6 +338,9 @@ public class PrometeoCarController : MonoBehaviour
       // Save the local velocity of the car in the z axis. Used to know if the car is going forward or backwards.
       localVelocityZ = transform.InverseTransformDirection(carRigidbody.linearVelocity).z;
 
+      // Update engine RPM and gear system
+      UpdateGearSystem();
+
       //CAR PHYSICS
 
       /*
@@ -424,94 +350,104 @@ public class PrometeoCarController : MonoBehaviour
       The following methods are called whenever a certain key is pressed. For example, in the first 'if' we call the
       method GoForward() if the user has pressed W.
 
-      In this part of the code we specify what the car needs to do if the user presses W (throttle), S (reverse),
+      In this part of the code we specify what the car needs to do if the user presses W (throttle), S (reverse/brake),
       A (turn left), D (turn right) or Space bar (handbrake).
       */
-      if (useTouchControls && touchControlsSetup){
+      bool isAccelerating = controls.Driving.Accelerate.IsPressed();
+      bool isReversing = controls.Driving.Reverse.IsPressed();
+      
+      // Use the Action map, but add a bulletproof fallback straight to the keyboard spacebar just in case the binding fails
+      bool isBraking = controls.Driving.HandBrake.IsPressed() || (Keyboard.current != null && Keyboard.current.spaceKey.isPressed);
+      bool wasBrakingReleased = controls.Driving.HandBrake.WasReleasedThisFrame() || (Keyboard.current != null && Keyboard.current.spaceKey.wasReleasedThisFrame);
+      
+      float steeringValue = controls.Driving.Steer.ReadValue<float>();
 
-        if(throttlePTI.buttonPressed){
-          CancelInvoke("DecelerateCar");
-          deceleratingCar = false;
-          GoForward();
-        }
-        if(reversePTI.buttonPressed){
-          CancelInvoke("DecelerateCar");
-          deceleratingCar = false;
-          GoReverse();
-        }
+      // Read gear shift inputs (keyboard fallback for when input actions haven't been regenerated)
+      bool shiftUpInput = (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame);
+      bool shiftDownInput = (Keyboard.current != null && Keyboard.current.qKey.wasPressedThisFrame);
+      bool clutchHeld = (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed);
 
-        if(turnLeftPTI.buttonPressed){
-          TurnLeft();
-        }
-        if(turnRightPTI.buttonPressed){
-          TurnRight();
-        }
-        if(handbrakePTI.buttonPressed){
-          CancelInvoke("DecelerateCar");
-          deceleratingCar = false;
-          Handbrake();
-        }
-        if(!handbrakePTI.buttonPressed){
-          RecoverTraction();
-        }
-        if((!throttlePTI.buttonPressed && !reversePTI.buttonPressed)){
-          ThrottleOff();
-        }
-        if((!reversePTI.buttonPressed && !throttlePTI.buttonPressed) && !handbrakePTI.buttonPressed && !deceleratingCar){
-          InvokeRepeating("DecelerateCar", 0f, 0.1f);
-          deceleratingCar = true;
-        }
-        if(!turnLeftPTI.buttonPressed && !turnRightPTI.buttonPressed && steeringAxis != 0f){
-          ResetSteeringAngle();
-        }
+      // Gamepad gear shift inputs
+      if(Gamepad.current != null){
+        if(Gamepad.current.rightShoulder.wasPressedThisFrame) shiftUpInput = true;
+        if(Gamepad.current.leftShoulder.wasPressedThisFrame) shiftDownInput = true;
+        if(Gamepad.current.buttonSouth.isPressed) clutchHeld = true;
+      }
 
-      }else{
+      // Handle gear shifting based on transmission mode
+      HandleGearInput(shiftUpInput, shiftDownInput, clutchHeld);
 
-        bool isAccelerating = controls.Driving.Accelerate.IsPressed();
-        bool isReversing = controls.Driving.Reverse.IsPressed();
-        
-        // Use the Action map, but add a bulletproof fallback straight to the keyboard spacebar just in case the binding fails
-        bool isBraking = controls.Driving.HandBrake.IsPressed() || (Keyboard.current != null && Keyboard.current.spaceKey.isPressed);
-        bool wasBrakingReleased = controls.Driving.HandBrake.WasReleasedThisFrame() || (Keyboard.current != null && Keyboard.current.spaceKey.wasReleasedThisFrame);
-        
-        float steeringValue = controls.Driving.Steer.ReadValue<float>();
+      bool intendedForward = (currentGear >= 1);
+      bool intendedReverse = (currentGear == -1);
 
+      if (transmissionMode == TransmissionMode.Automatic) {
         if(isAccelerating){
           CancelInvoke("DecelerateCar");
           deceleratingCar = false;
-          GoForward();
+          if (localVelocityZ < -1f) Brakes(); // moving backward, brake
+          else GoForward(); // auto-shifts to 1
         }
         if(isReversing){
           CancelInvoke("DecelerateCar");
           deceleratingCar = false;
-          GoReverse();
+          if (localVelocityZ > 1f) Brakes();
+          else GoReverse(); // auto-shifts to -1
         }
-
-        if(steeringValue < -0.1f){
-          TurnLeft();
-        }
-        if(steeringValue > 0.1f){
-          TurnRight();
-        }
-        if(isBraking){
+      } else {
+        if(isAccelerating){
           CancelInvoke("DecelerateCar");
           deceleratingCar = false;
-          Handbrake();
+          
+          if (intendedForward) {
+            if (localVelocityZ < -1f) Brakes(); // moving backward, brake
+            else GoForward();
+          } else if (intendedReverse) {
+            if (localVelocityZ > 1f) Brakes(); // moving forward, brake
+            else GoReverse();
+          } else {
+            ThrottleOff();
+          }
         }
-        if(wasBrakingReleased){
-          RecoverTraction();
+        
+        if(isReversing){
+          CancelInvoke("DecelerateCar");
+          deceleratingCar = false;
+          // In manual mode, 'S' is strictly a brake
+          Brakes();
         }
-        if((!isReversing && !isAccelerating)){
-          ThrottleOff();
-        }
-        if((!isReversing && !isAccelerating) && !isBraking && !deceleratingCar){
-          InvokeRepeating("DecelerateCar", 0f, 0.1f);
-          deceleratingCar = true;
-        }
-        if(steeringValue > -0.1f && steeringValue < 0.1f && steeringAxis != 0f){
-          ResetSteeringAngle();
-        }
+      }
 
+      if(steeringValue < -0.1f){
+        TurnLeft();
+      }
+      if(steeringValue > 0.1f){
+        TurnRight();
+      }
+      if(isBraking){
+        CancelInvoke("DecelerateCar");
+        deceleratingCar = false;
+        Handbrake();
+      }
+      if(wasBrakingReleased){
+        RecoverTraction();
+      }
+      if((!isReversing && !isAccelerating)){
+        ThrottleOff();
+      }
+      if((!isReversing && !isAccelerating) && !isBraking && !deceleratingCar){
+        InvokeRepeating("DecelerateCar", 0f, 0.1f);
+        deceleratingCar = true;
+      }
+      if(steeringValue > -0.1f && steeringValue < 0.1f && steeringAxis != 0f){
+        ResetSteeringAngle();
+      }
+
+      // Push telemetry data to UIManager singleton
+      if(UIManager.Instance != null){
+        UIManager.Instance.UpdateCarUI(
+          carSpeed, currentGear, engineRPM,
+          maxEngineRPM, clutchEngaged, transmissionMode
+        );
       }
 
     }
@@ -521,52 +457,7 @@ public class PrometeoCarController : MonoBehaviour
       AnimateWheelMeshes();
     }
 
-    // This method converts the car speed data from float to string, and then set the text of the UI carSpeedText with this value.
-    public void CarSpeedUI(){
 
-      if(useUI){
-          try{
-            float absoluteCarSpeed = Mathf.Abs(carSpeed);
-            carSpeedText.text = Mathf.RoundToInt(absoluteCarSpeed).ToString();
-          }catch(Exception ex){
-            Debug.LogWarning(ex);
-          }
-      }
-
-    }
-
-    // This method controls the car sounds. For example, the car engine will sound slow when the car speed is low because the
-    // pitch of the sound will be at its lowest point. On the other hand, it will sound fast when the car speed is high because
-    // the pitch of the sound will be the sum of the initial pitch + the car speed divided by 100f.
-    // Apart from that, the tireScreechSound will play whenever the car starts drifting or losing traction.
-    public void CarSounds(){
-
-      if(useSounds){
-        try{
-          if(carEngineSound != null){
-            float engineSoundPitch = initialCarEngineSoundPitch + (Mathf.Abs(carRigidbody.linearVelocity.magnitude) / 25f);
-            carEngineSound.pitch = engineSoundPitch;
-          }
-          if((isDrifting) || (isTractionLocked && Mathf.Abs(carSpeed) > 12f)){
-            if(!tireScreechSound.isPlaying){
-              tireScreechSound.Play();
-            }
-          }else if((!isDrifting) && (!isTractionLocked || Mathf.Abs(carSpeed) < 12f)){
-            tireScreechSound.Stop();
-          }
-        }catch(Exception ex){
-          Debug.LogWarning(ex);
-        }
-      }else if(!useSounds){
-        if(carEngineSound != null && carEngineSound.isPlaying){
-          carEngineSound.Stop();
-        }
-        if(tireScreechSound != null && tireScreechSound.isPlaying){
-          tireScreechSound.Stop();
-        }
-      }
-
-    }
 
     //
     //STEERING METHODS
@@ -648,38 +539,76 @@ public class PrometeoCarController : MonoBehaviour
     //ENGINE AND BRAKING METHODS
     //
 
+    // Returns the torque multiplier based on the current gear ratio.
+    // In Automatic mode, gears shift automatically. In other modes,
+    // the player controls shifting. Clutch affects torque in ManualClutch mode.
+    float GetGearTorqueMultiplier(){
+      float gearRatio;
+      if(currentGear == 0){
+        // Neutral — no torque
+        return 0f;
+      } else if(currentGear == -1){
+        gearRatio = reverseGearRatio;
+      } else {
+        int gearIndex = Mathf.Clamp(currentGear - 1, 0, gearRatios.Length - 1);
+        gearRatio = gearRatios[gearIndex];
+      }
+
+      float torqueMultiplier = gearRatio * finalDriveRatio;
+
+      // In ManualClutch mode, torque is scaled by how much the clutch is released
+      if(transmissionMode == TransmissionMode.ManualClutch){
+        float clutchFactor = 1f - clutchInput; // 0 input = full power, 1 input = no power
+        torqueMultiplier *= clutchFactor;
+      }
+
+      // Normalize so gear 1 ratio doesn't produce wildly different torque from the original flat value.
+      // The original torque was (accelerationMultiplier * 50f). We scale relative to gear 1 ratio.
+      if(gearRatios.Length > 0 && gearRatios[0] > 0f){
+        torqueMultiplier /= gearRatios[0];
+      }
+
+      return torqueMultiplier;
+    }
+
     // This method apply positive torque to the wheels in order to go forward.
     public void GoForward(){
-      //If the forces aplied to the rigidbody in the 'x' asis are greater than
-      //3f, it means that the car is losing traction, then the car will start emitting particle systems.
-      if(Mathf.Abs(localVelocityX) > 2.5f){
-        isDrifting = true;
-        DriftCarPS();
-      }else{
-        isDrifting = false;
-        DriftCarPS();
-      }
+      isDrifting = Mathf.Abs(localVelocityX) > 2.5f;
       // The following part sets the throttle power to 1 smoothly.
       throttleAxis = throttleAxis + (Time.deltaTime * 3f);
       if(throttleAxis > 1f){
         throttleAxis = 1f;
       }
+
+      // Ensure we are in a forward gear (auto-shift from reverse/neutral when accelerating)
+      if(currentGear <= 0 && transmissionMode == TransmissionMode.Automatic){
+        currentGear = 1;
+      }
+
       //If the car is going backwards, then apply brakes in order to avoid strange
       //behaviours. If the local velocity in the 'z' axis is less than -1f, then it
       //is safe to apply positive torque to go forward.
       if(localVelocityZ < -1f){
         Brakes();
       }else{
-        if(Mathf.RoundToInt(carSpeed) < maxSpeed){
+        if(engineRPM >= maxEngineRPM - 10f){
+          // Rev limiter hit
+          frontLeftCollider.motorTorque = 0;
+          frontRightCollider.motorTorque = 0;
+          rearLeftCollider.motorTorque = 0;
+          rearRightCollider.motorTorque = 0;
+        }else if(Mathf.RoundToInt(carSpeed) < maxSpeed){
+          float gearMultiplier = GetGearTorqueMultiplier();
+          float motorTorque = (accelerationMultiplier * 50f) * throttleAxis * gearMultiplier;
           //Apply positive torque in all wheels to go forward if maxSpeed has not been reached.
           frontLeftCollider.brakeTorque = 0;
-          frontLeftCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+          frontLeftCollider.motorTorque = motorTorque;
           frontRightCollider.brakeTorque = 0;
-          frontRightCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+          frontRightCollider.motorTorque = motorTorque;
           rearLeftCollider.brakeTorque = 0;
-          rearLeftCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+          rearLeftCollider.motorTorque = motorTorque;
           rearRightCollider.brakeTorque = 0;
-          rearRightCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+          rearRightCollider.motorTorque = motorTorque;
         }else {
           // If the maxSpeed has been reached, then stop applying torque to the wheels.
           // IMPORTANT: The maxSpeed variable should be considered as an approximation; the speed of the car
@@ -694,36 +623,41 @@ public class PrometeoCarController : MonoBehaviour
 
     // This method apply negative torque to the wheels in order to go backwards.
     public void GoReverse(){
-      //If the forces aplied to the rigidbody in the 'x' asis are greater than
-      //3f, it means that the car is losing traction, then the car will start emitting particle systems.
-      if(Mathf.Abs(localVelocityX) > 2.5f){
-        isDrifting = true;
-        DriftCarPS();
-      }else{
-        isDrifting = false;
-        DriftCarPS();
-      }
+      isDrifting = Mathf.Abs(localVelocityX) > 2.5f;
       // The following part sets the throttle power to -1 smoothly.
       throttleAxis = throttleAxis - (Time.deltaTime * 3f);
       if(throttleAxis < -1f){
         throttleAxis = -1f;
       }
+
+      // Ensure we are in reverse gear (auto-shift when reversing)
+      if(currentGear != -1 && transmissionMode == TransmissionMode.Automatic){
+        currentGear = -1;
+      }
+
       //If the car is still going forward, then apply brakes in order to avoid strange
       //behaviours. If the local velocity in the 'z' axis is greater than 1f, then it
       //is safe to apply negative torque to go reverse.
       if(localVelocityZ > 1f){
         Brakes();
       }else{
-        if(Mathf.Abs(Mathf.RoundToInt(carSpeed)) < maxReverseSpeed){
+        if(engineRPM >= maxEngineRPM - 10f){
+          frontLeftCollider.motorTorque = 0;
+          frontRightCollider.motorTorque = 0;
+          rearLeftCollider.motorTorque = 0;
+          rearRightCollider.motorTorque = 0;
+        }else if(Mathf.Abs(Mathf.RoundToInt(carSpeed)) < maxReverseSpeed){
+          float gearMultiplier = GetGearTorqueMultiplier();
+          float motorTorque = (accelerationMultiplier * 50f) * throttleAxis * Mathf.Abs(gearMultiplier);
           //Apply negative torque in all wheels to go in reverse if maxReverseSpeed has not been reached.
           frontLeftCollider.brakeTorque = 0;
-          frontLeftCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+          frontLeftCollider.motorTorque = motorTorque;
           frontRightCollider.brakeTorque = 0;
-          frontRightCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+          frontRightCollider.motorTorque = motorTorque;
           rearLeftCollider.brakeTorque = 0;
-          rearLeftCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+          rearLeftCollider.motorTorque = motorTorque;
           rearRightCollider.brakeTorque = 0;
-          rearRightCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+          rearRightCollider.motorTorque = motorTorque;
         }else {
           //If the maxReverseSpeed has been reached, then stop applying torque to the wheels.
           // IMPORTANT: The maxReverseSpeed variable should be considered as an approximation; the speed of the car
@@ -748,13 +682,7 @@ public class PrometeoCarController : MonoBehaviour
     // 1 is the slowest and 10 is the fastest deceleration. This method is called by the function InvokeRepeating,
     // usually every 0.1f when the user is not pressing W (throttle), S (reverse) or Space bar (handbrake).
     public void DecelerateCar(){
-      if(Mathf.Abs(localVelocityX) > 2.5f){
-        isDrifting = true;
-        DriftCarPS();
-      }else{
-        isDrifting = false;
-        DriftCarPS();
-      }
+      isDrifting = Mathf.Abs(localVelocityX) > 2.5f;
       // The following part resets the throttle power to 0 smoothly.
       if(throttleAxis != 0f){
         if(throttleAxis > 0f){
@@ -786,6 +714,11 @@ public class PrometeoCarController : MonoBehaviour
       frontRightCollider.brakeTorque = brakeForce;
       rearLeftCollider.brakeTorque = brakeForce;
       rearRightCollider.brakeTorque = brakeForce;
+
+      frontLeftCollider.motorTorque = 0;
+      frontRightCollider.motorTorque = 0;
+      rearLeftCollider.motorTorque = 0;
+      rearRightCollider.motorTorque = 0;
     }
 
     // This function is used to make the car lose traction. By using this, the car will start drifting. The amount of traction lost
@@ -809,16 +742,12 @@ public class PrometeoCarController : MonoBehaviour
       if(driftingAxis > 1f){
         driftingAxis = 1f;
       }
-      //If the forces aplied to the rigidbody in the 'x' asis are greater than
-      //3f, it means that the car lost its traction, then the car will start emitting particle systems.
       if(Mathf.Abs(localVelocityX) > 2.5f){
         isDrifting = true;
       }else{
         isDrifting = false;
       }
-      //If the 'driftingAxis' value is not 1f, it means that the wheels have not reach their maximum drifting
-      //value, so, we are going to continue increasing the sideways friction of the wheels until driftingAxis
-      // = 1f.
+
       if(driftingAxis < 1f){
         FLwheelFriction.extremumSlip = FLWextremumSlip * handbrakeDriftMultiplier * driftingAxis;
         frontLeftCollider.sidewaysFriction = FLwheelFriction;
@@ -833,57 +762,10 @@ public class PrometeoCarController : MonoBehaviour
         rearRightCollider.sidewaysFriction = RRwheelFriction;
       }
 
-      // Whenever the player uses the handbrake, it means that the wheels are locked, so we set 'isTractionLocked = true'
-      // and, as a consequense, the car starts to emit trails to simulate the wheel skids.
       isTractionLocked = true;
-      DriftCarPS();
-
     }
 
-    // This function is used to emit both the particle systems of the tires' smoke and the trail renderers of the tire skids
-    // depending on the value of the bool variables 'isDrifting' and 'isTractionLocked'.
-    public void DriftCarPS(){
 
-      if(useEffects){
-        try{
-          if(isDrifting){
-            RLWParticleSystem.Play();
-            RRWParticleSystem.Play();
-          }else if(!isDrifting){
-            RLWParticleSystem.Stop();
-            RRWParticleSystem.Stop();
-          }
-        }catch(Exception ex){
-          Debug.LogWarning(ex);
-        }
-
-        try{
-          if((isTractionLocked || Mathf.Abs(localVelocityX) > 5f) && Mathf.Abs(carSpeed) > 12f){
-            RLWTireSkid.emitting = true;
-            RRWTireSkid.emitting = true;
-          }else {
-            RLWTireSkid.emitting = false;
-            RRWTireSkid.emitting = false;
-          }
-        }catch(Exception ex){
-          Debug.LogWarning(ex);
-        }
-      }else if(!useEffects){
-        if(RLWParticleSystem != null){
-          RLWParticleSystem.Stop();
-        }
-        if(RRWParticleSystem != null){
-          RRWParticleSystem.Stop();
-        }
-        if(RLWTireSkid != null){
-          RLWTireSkid.emitting = false;
-        }
-        if(RRWTireSkid != null){
-          RRWTireSkid.emitting = false;
-        }
-      }
-
-    }
 
     // This function is used to recover the traction of the car when the user has stopped using the car's handbrake.
     public void RecoverTraction(){
@@ -929,6 +811,102 @@ public class PrometeoCarController : MonoBehaviour
         rearRightCollider.sidewaysFriction = RRwheelFriction;
 
         driftingAxis = 0f;
+      }
+    }
+
+    //
+    //GEAR SYSTEM METHODS
+    //
+
+    // Handles gear shift input based on the current transmission mode.
+    void HandleGearInput(bool shiftUp, bool shiftDown, bool clutchHeld){
+      // Update clutch state
+      clutchInput = clutchHeld ? 1f : 0f;
+      clutchEngaged = !clutchHeld; // clutch engaged = power flows = clutch pedal NOT pressed
+
+      switch(transmissionMode){
+        case TransmissionMode.Automatic:
+          // Automatic mode: no manual shifting needed, handled in UpdateGearSystem()
+          break;
+
+        case TransmissionMode.SequentialGear:
+          // Sequential: shift up/down without clutch
+          if(shiftUp){
+            ShiftUp();
+          }
+          if(shiftDown){
+            ShiftDown();
+          }
+          break;
+
+        case TransmissionMode.ManualClutch:
+          // Manual: must hold clutch to shift
+          if(clutchHeld){
+            if(shiftUp){
+              ShiftUp();
+            }
+            if(shiftDown){
+              ShiftDown();
+            }
+          }
+          break;
+      }
+    }
+
+    // Shifts up one gear, clamped to numberOfGears.
+    void ShiftUp(){
+      if(currentGear < numberOfGears){
+        currentGear++;
+        lastShiftTime = Time.time;
+      }
+    }
+
+    // Shifts down one gear. Minimum is -1 (reverse).
+    void ShiftDown(){
+      if(currentGear > -1){
+        currentGear--;
+        lastShiftTime = Time.time;
+      }
+    }
+
+    // Computes engine RPM from wheel speed and current gear ratio,
+    // and handles automatic shifting when in Automatic mode.
+    void UpdateGearSystem(){
+      // Compute engine RPM from average rear wheel RPM
+      float averageWheelRPM = (Mathf.Abs(rearLeftCollider.rpm) + Mathf.Abs(rearRightCollider.rpm)) / 2f;
+
+      float currentRatio;
+      if(currentGear == 0){
+        currentRatio = 0f;
+      } else if(currentGear == -1){
+        currentRatio = reverseGearRatio;
+      } else {
+        int gearIndex = Mathf.Clamp(currentGear - 1, 0, gearRatios.Length - 1);
+        currentRatio = gearRatios[gearIndex];
+      }
+
+      if(currentRatio > 0f){
+        engineRPM = averageWheelRPM * currentRatio * finalDriveRatio;
+      } else {
+        engineRPM = idleRPM;
+      }
+
+      // Clamp RPM between idle and max
+      engineRPM = Mathf.Clamp(engineRPM, idleRPM, maxEngineRPM);
+
+
+
+      // Automatic shifting logic
+      if(transmissionMode == TransmissionMode.Automatic && currentGear >= 1){
+        if (Time.time - lastShiftTime > shiftCooldown) {
+          if(engineRPM >= shiftUpRPM && currentGear < numberOfGears){
+            currentGear++;
+            lastShiftTime = Time.time;
+          } else if(engineRPM <= shiftDownRPM && currentGear > 1){
+            currentGear--;
+            lastShiftTime = Time.time;
+          }
+        }
       }
     }
 

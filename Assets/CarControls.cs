@@ -127,6 +127,33 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShiftUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""a1b2c3d4-e5f6-7890-abcd-ef1234567890"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShiftDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""b2c3d4e5-f6a7-8901-bcde-f12345678901"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Clutch"",
+                    ""type"": ""Button"",
+                    ""id"": ""c3d4e5f6-a7b8-9012-cdef-012345678902"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -360,6 +387,72 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                     ""action"": ""HandBrake"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d4e5f6a7-b8c9-0123-def0-123456789abc"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShiftUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e5f6a7b8-c9d0-1234-ef01-23456789abcd"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShiftUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f6a7b8c9-d0e1-2345-f012-3456789abcde"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShiftDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a7b8c9d0-e1f2-3456-0123-456789abcdef"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShiftDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b8c9d0e1-f2a3-4567-1234-56789abcdef0"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Clutch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c9d0e1f2-a3b4-5678-2345-6789abcdef01"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Clutch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -372,6 +465,9 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
         m_Driving_Steer = m_Driving.FindAction("Steer", throwIfNotFound: true);
         m_Driving_Reverse = m_Driving.FindAction("Reverse", throwIfNotFound: true);
         m_Driving_HandBrake = m_Driving.FindAction("HandBrake", throwIfNotFound: true);
+        m_Driving_ShiftUp = m_Driving.FindAction("ShiftUp", throwIfNotFound: true);
+        m_Driving_ShiftDown = m_Driving.FindAction("ShiftDown", throwIfNotFound: true);
+        m_Driving_Clutch = m_Driving.FindAction("Clutch", throwIfNotFound: true);
     }
 
     ~@CarControls()
@@ -456,6 +552,9 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Driving_Steer;
     private readonly InputAction m_Driving_Reverse;
     private readonly InputAction m_Driving_HandBrake;
+    private readonly InputAction m_Driving_ShiftUp;
+    private readonly InputAction m_Driving_ShiftDown;
+    private readonly InputAction m_Driving_Clutch;
     /// <summary>
     /// Provides access to input actions defined in input action map "Driving".
     /// </summary>
@@ -483,6 +582,18 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Driving/HandBrake".
         /// </summary>
         public InputAction @HandBrake => m_Wrapper.m_Driving_HandBrake;
+        /// <summary>
+        /// Provides access to the underlying input action "Driving/ShiftUp".
+        /// </summary>
+        public InputAction @ShiftUp => m_Wrapper.m_Driving_ShiftUp;
+        /// <summary>
+        /// Provides access to the underlying input action "Driving/ShiftDown".
+        /// </summary>
+        public InputAction @ShiftDown => m_Wrapper.m_Driving_ShiftDown;
+        /// <summary>
+        /// Provides access to the underlying input action "Driving/Clutch".
+        /// </summary>
+        public InputAction @Clutch => m_Wrapper.m_Driving_Clutch;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -521,6 +632,15 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
             @HandBrake.started += instance.OnHandBrake;
             @HandBrake.performed += instance.OnHandBrake;
             @HandBrake.canceled += instance.OnHandBrake;
+            @ShiftUp.started += instance.OnShiftUp;
+            @ShiftUp.performed += instance.OnShiftUp;
+            @ShiftUp.canceled += instance.OnShiftUp;
+            @ShiftDown.started += instance.OnShiftDown;
+            @ShiftDown.performed += instance.OnShiftDown;
+            @ShiftDown.canceled += instance.OnShiftDown;
+            @Clutch.started += instance.OnClutch;
+            @Clutch.performed += instance.OnClutch;
+            @Clutch.canceled += instance.OnClutch;
         }
 
         /// <summary>
@@ -544,6 +664,15 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
             @HandBrake.started -= instance.OnHandBrake;
             @HandBrake.performed -= instance.OnHandBrake;
             @HandBrake.canceled -= instance.OnHandBrake;
+            @ShiftUp.started -= instance.OnShiftUp;
+            @ShiftUp.performed -= instance.OnShiftUp;
+            @ShiftUp.canceled -= instance.OnShiftUp;
+            @ShiftDown.started -= instance.OnShiftDown;
+            @ShiftDown.performed -= instance.OnShiftDown;
+            @ShiftDown.canceled -= instance.OnShiftDown;
+            @Clutch.started -= instance.OnClutch;
+            @Clutch.performed -= instance.OnClutch;
+            @Clutch.canceled -= instance.OnClutch;
         }
 
         /// <summary>
@@ -612,5 +741,26 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnHandBrake(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ShiftUp" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShiftUp(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ShiftDown" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShiftDown(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Clutch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnClutch(InputAction.CallbackContext context);
     }
 }

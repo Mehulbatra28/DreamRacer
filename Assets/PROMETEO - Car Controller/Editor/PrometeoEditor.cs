@@ -38,42 +38,19 @@ public class PrometeoEditor : Editor{
   private SerializedProperty rearLeftCollider;
   private SerializedProperty rearRightMesh;
   private SerializedProperty rearRightCollider;
+
+  //GEAR SYSTEM VARIABLES
   //
   //
-  //PARTICLE SYSTEMS' VARIABLES
-  //
-  //
-  private SerializedProperty useEffects;
-  private SerializedProperty RLWParticleSystem;
-  private SerializedProperty RRWParticleSystem;
-  private SerializedProperty RLWTireSkid;
-  private SerializedProperty RRWTireSkid;
-  //
-  //
-  //SPEED TEXT (UI) VARIABLES
-  //
-  //
-  private SerializedProperty useUI;
-  private SerializedProperty carSpeedText;
-  //
-  //
-  //SPEED TEXT (UI) VARIABLES
-  //
-  //
-  private SerializedProperty useSounds;
-  private SerializedProperty carEngineSound;
-  private SerializedProperty tireScreechSound;
-  //
-  //
-  //TOUCH CONTROLS VARIABLES
-  //
-  //
-  private SerializedProperty useTouchControls;
-  private SerializedProperty throttleButton;
-  private SerializedProperty reverseButton;
-  private SerializedProperty turnRightButton;
-  private SerializedProperty turnLeftButton;
-  private SerializedProperty handbrakeButton;
+  private SerializedProperty transmissionMode;
+  private SerializedProperty numberOfGears;
+  private SerializedProperty gearRatios;
+  private SerializedProperty reverseGearRatio;
+  private SerializedProperty finalDriveRatio;
+  private SerializedProperty maxEngineRPM;
+  private SerializedProperty idleRPM;
+  private SerializedProperty shiftUpRPM;
+  private SerializedProperty shiftDownRPM;
 
   private void OnEnable(){
     prometeo = (PrometeoCarController)target;
@@ -98,25 +75,16 @@ public class PrometeoEditor : Editor{
     rearRightMesh = SO.FindProperty("rearRightMesh");
     rearRightCollider = SO.FindProperty("rearRightCollider");
 
-    useEffects = SO.FindProperty("useEffects");
-    RLWParticleSystem = SO.FindProperty("RLWParticleSystem");
-    RRWParticleSystem = SO.FindProperty("RRWParticleSystem");
-    RLWTireSkid = SO.FindProperty("RLWTireSkid");
-    RRWTireSkid = SO.FindProperty("RRWTireSkid");
 
-    useUI = SO.FindProperty("useUI");
-    carSpeedText = SO.FindProperty("carSpeedText");
-
-    useSounds = SO.FindProperty("useSounds");
-    carEngineSound = SO.FindProperty("carEngineSound");
-    tireScreechSound = SO.FindProperty("tireScreechSound");
-
-    useTouchControls = SO.FindProperty("useTouchControls");
-    throttleButton = SO.FindProperty("throttleButton");
-    reverseButton = SO.FindProperty("reverseButton");
-    turnRightButton = SO.FindProperty("turnRightButton");
-    turnLeftButton = SO.FindProperty("turnLeftButton");
-    handbrakeButton = SO.FindProperty("handbrakeButton");
+    transmissionMode = SO.FindProperty("transmissionMode");
+    numberOfGears = SO.FindProperty("numberOfGears");
+    gearRatios = SO.FindProperty("gearRatios");
+    reverseGearRatio = SO.FindProperty("reverseGearRatio");
+    finalDriveRatio = SO.FindProperty("finalDriveRatio");
+    maxEngineRPM = SO.FindProperty("maxEngineRPM");
+    idleRPM = SO.FindProperty("idleRPM");
+    shiftUpRPM = SO.FindProperty("shiftUpRPM");
+    shiftDownRPM = SO.FindProperty("shiftDownRPM");
 
   }
 
@@ -167,80 +135,38 @@ public class PrometeoEditor : Editor{
 
     //
     //
-    //EFFECTS
+    //GEAR SYSTEM
     //
     //
 
     GUILayout.Space(25);
-    GUILayout.Label("EFFECTS", EditorStyles.boldLabel);
+    GUILayout.Label("GEAR SYSTEM", EditorStyles.boldLabel);
     GUILayout.Space(10);
 
-    useEffects.boolValue = EditorGUILayout.BeginToggleGroup("Use effects (particle systems)?", useEffects.boolValue);
+    EditorGUILayout.PropertyField(transmissionMode, new GUIContent("Transmission Mode: "));
+    GUILayout.Space(5);
+
+    numberOfGears.intValue = EditorGUILayout.IntSlider("Number of Gears:", numberOfGears.intValue, 1, 8);
+    EditorGUILayout.PropertyField(gearRatios, new GUIContent("Gear Ratios: "), true);
+    EditorGUILayout.PropertyField(reverseGearRatio, new GUIContent("Reverse Gear Ratio: "));
+    EditorGUILayout.PropertyField(finalDriveRatio, new GUIContent("Final Drive Ratio: "));
+
     GUILayout.Space(10);
+    maxEngineRPM.floatValue = EditorGUILayout.Slider("Max Engine RPM:", maxEngineRPM.floatValue, 4000f, 12000f);
+    idleRPM.floatValue = EditorGUILayout.Slider("Idle RPM:", idleRPM.floatValue, 500f, 1500f);
 
-        EditorGUILayout.PropertyField(RLWParticleSystem, new GUIContent("Rear Left Particle System: "));
-        EditorGUILayout.PropertyField(RRWParticleSystem, new GUIContent("Rear Right Particle System: "));
-
-        EditorGUILayout.PropertyField(RLWTireSkid, new GUIContent("Rear Left Trail Renderer: "));
-        EditorGUILayout.PropertyField(RRWTireSkid, new GUIContent("Rear Right Trail Renderer: "));
-
-    EditorGUILayout.EndToggleGroup();
-
-    //
-    //
-    //UI
-    //
-    //
-
-    GUILayout.Space(25);
-    GUILayout.Label("UI", EditorStyles.boldLabel);
-    GUILayout.Space(10);
-
-    useUI.boolValue = EditorGUILayout.BeginToggleGroup("Use UI (Speed text)?", useUI.boolValue);
-    GUILayout.Space(10);
-
-        EditorGUILayout.PropertyField(carSpeedText, new GUIContent("Speed Text (UI): "));
-
-    EditorGUILayout.EndToggleGroup();
-
-    //
-    //
-    //SOUNDS
-    //
-    //
-
-    GUILayout.Space(25);
-    GUILayout.Label("SOUNDS", EditorStyles.boldLabel);
-    GUILayout.Space(10);
-
-    useSounds.boolValue = EditorGUILayout.BeginToggleGroup("Use sounds (car sounds)?", useSounds.boolValue);
-    GUILayout.Space(10);
-
-        EditorGUILayout.PropertyField(carEngineSound, new GUIContent("Car Engine Sound: "));
-        EditorGUILayout.PropertyField(tireScreechSound, new GUIContent("Tire Screech Sound: "));
-
-    EditorGUILayout.EndToggleGroup();
-
-    //
-    //
-    //TOUCH CONTROLS
-    //
-    //
-
-    GUILayout.Space(25);
-    GUILayout.Label("TOUCH CONTROLS", EditorStyles.boldLabel);
-    GUILayout.Space(10);
-
-    useTouchControls.boolValue = EditorGUILayout.BeginToggleGroup("Use touch controls (mobile devices)?", useTouchControls.boolValue);
-    GUILayout.Space(10);
-
-        EditorGUILayout.PropertyField(throttleButton, new GUIContent("Throttle Button: "));
-        EditorGUILayout.PropertyField(reverseButton, new GUIContent("Brakes/Reverse Button: "));
-        EditorGUILayout.PropertyField(turnLeftButton, new GUIContent("Turn Left Button: "));
-        EditorGUILayout.PropertyField(turnRightButton, new GUIContent("Turn Right Button: "));
-        EditorGUILayout.PropertyField(handbrakeButton, new GUIContent("Handbrake Button: "));
-
-    EditorGUILayout.EndToggleGroup();
+    // Only show auto-shift thresholds when in Automatic mode
+    if(transmissionMode.enumValueIndex == 0){ // 0 = Automatic
+      shiftUpRPM.floatValue = EditorGUILayout.Slider("Shift Up RPM:", shiftUpRPM.floatValue, 4000f, 10000f);
+      shiftDownRPM.floatValue = EditorGUILayout.Slider("Shift Down RPM:", shiftDownRPM.floatValue, 1000f, 4000f);
+    } else {
+      GUILayout.Space(5);
+      EditorGUILayout.HelpBox(
+        transmissionMode.enumValueIndex == 1
+          ? "Sequential Mode: Player shifts with E/Q (keyboard) or Bumpers (gamepad). No clutch needed."
+          : "Manual Mode: Player must hold Clutch (Left Shift / A button) while shifting with E/Q or Bumpers.",
+        MessageType.Info);
+    }
 
     //END
 
