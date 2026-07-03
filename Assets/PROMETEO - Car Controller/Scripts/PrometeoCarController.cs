@@ -14,8 +14,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using Fusion;
 
-public class PrometeoCarController : MonoBehaviour
+public class PrometeoCarController : NetworkBehaviour
 {
 
     //CAR SETUP
@@ -106,7 +107,6 @@ public class PrometeoCarController : MonoBehaviour
       private float engineRPM;
       private bool clutchEngaged = true;   // true = clutch released (power flows), false = clutch pressed (disengaged)
       private float clutchInput;           // 0 = clutch released, 1 = clutch fully pressed
-      private float lastShiftTime;
       private float shiftCooldown = 0.5f;
 
       // Public read-only properties for UIManager
@@ -141,21 +141,25 @@ public class PrometeoCarController : MonoBehaviour
       WheelFrictionCurve RRwheelFriction;
       float RRWextremumSlip;
 
-      private CarControls controls;
+      [Space(10)]
+      public GameObject localCamera; // Assign your Cinemachine camera here in the Inspector
 
-    void Awake()
-    {
-        controls = new CarControls();
-    }
+      [Networked] private NetworkButtons PrevButtons { get; set; }
+      [Networked] private int LastShiftTick { get; set; }
 
-    void OnEnable()
-    {
-        controls.Enable();
-    }
+      [Networked] public float NetCarSpeed { get; set; }
+      [Networked] public float NetEngineRPM { get; set; }
+      [Networked] public int NetCurrentGear { get; set; }
+      [Networked] public bool NetClutchEngaged { get; set; }
+      [Networked] public float NetWheelRPM { get; set; }
+      [Networked] public float NetSteeringAngle { get; set; }
 
-    void OnDisable()
+    public override void Spawned()
     {
-        controls.Disable();
+        if (localCamera != null)
+        {
+            localCamera.SetActive(HasInputAuthority);
+        }
     }
 
     // Start is called before the first frame update
@@ -325,12 +329,18 @@ public class PrometeoCarController : MonoBehaviour
       wheelMesh.transform.rotation = collider.transform.rotation;
     }
 
-    // Update is called once per frame
-    void Update()
+    float SimulationDeltaTime => Runner != null ? Runner.DeltaTime : Time.fixedDeltaTime;
+
+    // FixedUpdateNetwork is called by Fusion's simulation tick
+    public override void FixedUpdateNetwork()
     {
+      // State authority simulates all cars; input authority simulates locally for client prediction.
+      if (!HasStateAuthority && !HasInputAuthority)
+      {
+        return;
+      }
 
       //CAR DATA
-
       // We determine the speed of the car.
       carSpeed = (2 * Mathf.PI * frontLeftCollider.radius * frontLeftCollider.rpm * 60) / 1000;
       // Save the local velocity of the car in the x axis. Used to know if the car is drifting.
@@ -342,30 +352,29 @@ public class PrometeoCarController : MonoBehaviour
       UpdateGearSystem();
 
       //CAR PHYSICS
+      bool isAccelerating = false;
+      bool isReversing = false;
+      bool isBraking = false;
+      float steeringValue = 0f;
+      bool shiftUpInput = false;
+      bool shiftDownInput = false;
+      bool clutchHeld = false;
 
-      /*
-      The next part is regarding to the car controller. First, it checks if the user wants to use touch controls (for
-      mobile devices) or analog input controls (WASD + Space).
+      if (GetInput(out NetworkCarInput input))
+      {
+          isAccelerating = input.Buttons.IsSet(NetworkCarInput.ACCELERATE);
+          isReversing = input.Buttons.IsSet(NetworkCarInput.REVERSE);
 
-      The following methods are called whenever a certain key is pressed. For example, in the first 'if' we call the
-      method GoForward() if the user has pressed W.
+          isBraking = input.Buttons.IsSet(NetworkCarInput.BRAKE);
 
-      In this part of the code we specify what the car needs to do if the user presses W (throttle), S (reverse/brake),
-      A (turn left), D (turn right) or Space bar (handbrake).
-      */
-      bool isAccelerating = controls.Driving.Accelerate.IsPressed();
-      bool isReversing = controls.Driving.Reverse.IsPressed();
-      
-      // Read handbrake inputs from input system
-      bool isBraking = controls.Driving.HandBrake.IsPressed();
-      bool wasBrakingReleased = controls.Driving.HandBrake.WasReleasedThisFrame();
-      
-      float steeringValue = controls.Driving.Steer.ReadValue<float>();
+          steeringValue = input.Steering;
 
-      // Read gear shift inputs from input system
-      bool shiftUpInput = controls.Driving.ShiftUp.WasPressedThisFrame();
-      bool shiftDownInput = controls.Driving.ShiftDown.WasPressedThisFrame();
-      bool clutchHeld = controls.Driving.Clutch.IsPressed();
+          shiftUpInput = !PrevButtons.IsSet(NetworkCarInput.SHIFT_UP) && input.Buttons.IsSet(NetworkCarInput.SHIFT_UP);
+          shiftDownInput = !PrevButtons.IsSet(NetworkCarInput.SHIFT_DOWN) && input.Buttons.IsSet(NetworkCarInput.SHIFT_DOWN);
+          clutchHeld = input.Buttons.IsSet(NetworkCarInput.CLUTCH);
+
+          PrevButtons = input.Buttons;
+      }
 
       // Handle gear shifting based on transmission mode
       HandleGearInput(shiftUpInput, shiftDownInput, clutchHeld);
@@ -375,22 +384,19 @@ public class PrometeoCarController : MonoBehaviour
 
       if (transmissionMode == TransmissionMode.Automatic) {
         if(isAccelerating){
-          CancelInvoke("DecelerateCar");
           deceleratingCar = false;
           if (localVelocityZ < -1f) Brakes(); // moving backward, brake
           else GoForward(); // auto-shifts to 1
         }
         if(isReversing){
-          CancelInvoke("DecelerateCar");
           deceleratingCar = false;
           if (localVelocityZ > 1f) Brakes();
           else GoReverse(); // auto-shifts to -1
         }
       } else {
         if(isAccelerating){
-          CancelInvoke("DecelerateCar");
           deceleratingCar = false;
-          
+
           if (intendedForward) {
             if (localVelocityZ < -1f) Brakes(); // moving backward, brake
             else GoForward();
@@ -401,9 +407,8 @@ public class PrometeoCarController : MonoBehaviour
             ThrottleOff();
           }
         }
-        
+
         if(isReversing){
-          CancelInvoke("DecelerateCar");
           deceleratingCar = false;
           // In manual mode, 'S' is strictly a brake
           Brakes();
@@ -417,26 +422,38 @@ public class PrometeoCarController : MonoBehaviour
         TurnRight();
       }
       if(isBraking){
-        CancelInvoke("DecelerateCar");
         deceleratingCar = false;
         Handbrake();
-      }
-      if(wasBrakingReleased){
-        RecoverTraction();
       }
       if((!isReversing && !isAccelerating)){
         ThrottleOff();
       }
       if((!isReversing && !isAccelerating) && !isBraking && !deceleratingCar){
-        InvokeRepeating("DecelerateCar", 0f, 0.1f);
+        DecelerateCar();
         deceleratingCar = true;
       }
       if(steeringValue > -0.1f && steeringValue < 0.1f && steeringAxis != 0f){
         ResetSteeringAngle();
       }
 
-      // Push telemetry data to UIManager singleton
-      if(UIManager.Instance != null){
+      if (isTractionLocked && !isBraking)
+      {
+        RecoverTraction();
+      }
+
+      // Sync telemetry for remote proxies only; predicting peers use local values.
+      if (HasStateAuthority)
+      {
+        NetCarSpeed = carSpeed;
+        NetEngineRPM = engineRPM;
+        NetCurrentGear = currentGear;
+        NetClutchEngaged = clutchEngaged;
+        NetWheelRPM = frontLeftCollider.rpm;
+        NetSteeringAngle = frontLeftCollider.steerAngle;
+      }
+
+      // Push telemetry data to UIManager singleton for the local player
+      if(HasInputAuthority && UIManager.Instance != null){
         UIManager.Instance.UpdateCarUI(
           carSpeed, currentGear, engineRPM,
           maxEngineRPM, clutchEngaged, transmissionMode
@@ -458,7 +475,7 @@ public class PrometeoCarController : MonoBehaviour
 
     //The following method turns the front car wheels to the left. The speed of this movement will depend on the steeringSpeed variable.
     public void TurnLeft(){
-      steeringAxis = steeringAxis - (Time.deltaTime * 10f * steeringSpeed);
+      steeringAxis = steeringAxis - (SimulationDeltaTime * 10f * steeringSpeed);
       if(steeringAxis < -1f){
         steeringAxis = -1f;
       }
@@ -469,7 +486,7 @@ public class PrometeoCarController : MonoBehaviour
 
     //The following method turns the front car wheels to the right. The speed of this movement will depend on the steeringSpeed variable.
     public void TurnRight(){
-      steeringAxis = steeringAxis + (Time.deltaTime * 10f * steeringSpeed);
+      steeringAxis = steeringAxis + (SimulationDeltaTime * 10f * steeringSpeed);
       if(steeringAxis > 1f){
         steeringAxis = 1f;
       }
@@ -482,9 +499,9 @@ public class PrometeoCarController : MonoBehaviour
     // on the steeringSpeed variable.
     public void ResetSteeringAngle(){
       if(steeringAxis < 0f){
-        steeringAxis = steeringAxis + (Time.deltaTime * 10f * steeringSpeed);
+        steeringAxis = steeringAxis + (SimulationDeltaTime * 10f * steeringSpeed);
       }else if(steeringAxis > 0f){
-        steeringAxis = steeringAxis - (Time.deltaTime * 10f * steeringSpeed);
+        steeringAxis = steeringAxis - (SimulationDeltaTime * 10f * steeringSpeed);
       }
       if(Mathf.Abs(frontLeftCollider.steerAngle) < 1f){
         steeringAxis = 0f;
@@ -498,31 +515,56 @@ public class PrometeoCarController : MonoBehaviour
     // A 180° Y rotation offset is applied to correct for wheel meshes that face the opposite direction.
     private static readonly Quaternion wheelRotationOffset = Quaternion.Euler(0, 180, 0);
 
+    private float clientWheelSpin = 0f;
+
     void AnimateWheelMeshes(){
       try{
-        Quaternion FLWRotation;
-        Vector3 FLWPosition;
-        frontLeftCollider.GetWorldPose(out FLWPosition, out FLWRotation);
-        frontLeftMesh.transform.position = FLWPosition;
-        frontLeftMesh.transform.rotation = FLWRotation * wheelRotationOffset;
+        if (HasStateAuthority || HasInputAuthority) {
+            Quaternion FLWRotation;
+            Vector3 FLWPosition;
+            frontLeftCollider.GetWorldPose(out FLWPosition, out FLWRotation);
+            frontLeftMesh.transform.position = FLWPosition;
+            frontLeftMesh.transform.rotation = FLWRotation * wheelRotationOffset;
 
-        Quaternion FRWRotation;
-        Vector3 FRWPosition;
-        frontRightCollider.GetWorldPose(out FRWPosition, out FRWRotation);
-        frontRightMesh.transform.position = FRWPosition;
-        frontRightMesh.transform.rotation = FRWRotation * wheelRotationOffset;
+            Quaternion FRWRotation;
+            Vector3 FRWPosition;
+            frontRightCollider.GetWorldPose(out FRWPosition, out FRWRotation);
+            frontRightMesh.transform.position = FRWPosition;
+            frontRightMesh.transform.rotation = FRWRotation * wheelRotationOffset;
 
-        Quaternion RLWRotation;
-        Vector3 RLWPosition;
-        rearLeftCollider.GetWorldPose(out RLWPosition, out RLWRotation);
-        rearLeftMesh.transform.position = RLWPosition;
-        rearLeftMesh.transform.rotation = RLWRotation * wheelRotationOffset;
+            Quaternion RLWRotation;
+            Vector3 RLWPosition;
+            rearLeftCollider.GetWorldPose(out RLWPosition, out RLWRotation);
+            rearLeftMesh.transform.position = RLWPosition;
+            rearLeftMesh.transform.rotation = RLWRotation * wheelRotationOffset;
 
-        Quaternion RRWRotation;
-        Vector3 RRWPosition;
-        rearRightCollider.GetWorldPose(out RRWPosition, out RRWRotation);
-        rearRightMesh.transform.position = RRWPosition;
-        rearRightMesh.transform.rotation = RRWRotation * wheelRotationOffset;
+            Quaternion RRWRotation;
+            Vector3 RRWPosition;
+            rearRightCollider.GetWorldPose(out RRWPosition, out RRWRotation);
+            rearRightMesh.transform.position = RRWPosition;
+            rearRightMesh.transform.rotation = RRWRotation * wheelRotationOffset;
+        } else {
+            // Client manually spins the wheels based on networked RPM and steering
+            clientWheelSpin += NetWheelRPM * 6f * Time.deltaTime;
+            
+            Vector3 pos; Quaternion rot;
+            
+            frontLeftCollider.GetWorldPose(out pos, out rot);
+            frontLeftMesh.transform.position = pos;
+            frontLeftMesh.transform.rotation = rot * Quaternion.Euler(clientWheelSpin, NetSteeringAngle, 0) * wheelRotationOffset;
+            
+            frontRightCollider.GetWorldPose(out pos, out rot);
+            frontRightMesh.transform.position = pos;
+            frontRightMesh.transform.rotation = rot * Quaternion.Euler(clientWheelSpin, NetSteeringAngle, 0) * wheelRotationOffset;
+            
+            rearLeftCollider.GetWorldPose(out pos, out rot);
+            rearLeftMesh.transform.position = pos;
+            rearLeftMesh.transform.rotation = rot * Quaternion.Euler(clientWheelSpin, 0, 0) * wheelRotationOffset;
+            
+            rearRightCollider.GetWorldPose(out pos, out rot);
+            rearRightMesh.transform.position = pos;
+            rearRightMesh.transform.rotation = rot * Quaternion.Euler(clientWheelSpin, 0, 0) * wheelRotationOffset;
+        }
       }catch(Exception ex){
         Debug.LogWarning(ex);
       }
@@ -568,7 +610,7 @@ public class PrometeoCarController : MonoBehaviour
     public void GoForward(){
       isDrifting = Mathf.Abs(localVelocityX) > 2.5f;
       // The following part sets the throttle power to 1 smoothly.
-      throttleAxis = throttleAxis + (Time.deltaTime * 3f);
+      throttleAxis = throttleAxis + (SimulationDeltaTime * 3f);
       if(throttleAxis > 1f){
         throttleAxis = 1f;
       }
@@ -618,7 +660,7 @@ public class PrometeoCarController : MonoBehaviour
     public void GoReverse(){
       isDrifting = Mathf.Abs(localVelocityX) > 2.5f;
       // The following part sets the throttle power to -1 smoothly.
-      throttleAxis = throttleAxis - (Time.deltaTime * 3f);
+      throttleAxis = throttleAxis - (SimulationDeltaTime * 3f);
       if(throttleAxis < -1f){
         throttleAxis = -1f;
       }
@@ -679,9 +721,9 @@ public class PrometeoCarController : MonoBehaviour
       // The following part resets the throttle power to 0 smoothly.
       if(throttleAxis != 0f){
         if(throttleAxis > 0f){
-          throttleAxis = throttleAxis - (Time.deltaTime * 10f);
+          throttleAxis = throttleAxis - (SimulationDeltaTime * 10f);
         }else if(throttleAxis < 0f){
-            throttleAxis = throttleAxis + (Time.deltaTime * 10f);
+            throttleAxis = throttleAxis + (SimulationDeltaTime * 10f);
         }
         if(Mathf.Abs(throttleAxis) < 0.15f){
           throttleAxis = 0f;
@@ -697,7 +739,6 @@ public class PrometeoCarController : MonoBehaviour
       // also cancel the invoke of this method.
       if(carRigidbody.linearVelocity.magnitude < 0.25f){
         carRigidbody.linearVelocity = Vector3.zero;
-        CancelInvoke("DecelerateCar");
       }
     }
 
@@ -718,15 +759,13 @@ public class PrometeoCarController : MonoBehaviour
     // will depend on the handbrakeDriftMultiplier variable. If this value is small, then the car will not drift too much, but if
     // it is high, then you could make the car to feel like going on ice.
     public void Handbrake(){
-      CancelInvoke("RecoverTraction");
-      
       // FIX: Actually apply brake torque to rear wheels so the handbrake stops the car!
       rearLeftCollider.brakeTorque = brakeForce;
       rearRightCollider.brakeTorque = brakeForce;
       // We are going to start losing traction smoothly, there is were our 'driftingAxis' variable takes
       // place. This variable will start from 0 and will reach a top value of 1, which means that the maximum
       // drifting value has been reached. It will increase smoothly by using the variable Time.deltaTime.
-      driftingAxis = driftingAxis + (Time.deltaTime);
+      driftingAxis = driftingAxis + SimulationDeltaTime;
       float secureStartingPoint = driftingAxis * FLWextremumSlip * handbrakeDriftMultiplier;
 
       if(secureStartingPoint < FLWextremumSlip){
@@ -762,19 +801,14 @@ public class PrometeoCarController : MonoBehaviour
 
     // This function is used to recover the traction of the car when the user has stopped using the car's handbrake.
     public void RecoverTraction(){
-      isTractionLocked = false;
-      
       // FIX: Release the handbrake brake torque
       rearLeftCollider.brakeTorque = 0;
       rearRightCollider.brakeTorque = 0;
-      driftingAxis = driftingAxis - (Time.deltaTime / 1.5f);
+      driftingAxis = driftingAxis - (SimulationDeltaTime / 1.5f);
       if(driftingAxis < 0f){
         driftingAxis = 0f;
       }
 
-      //If the 'driftingAxis' value is not 0f, it means that the wheels have not recovered their traction.
-      //We are going to continue decreasing the sideways friction of the wheels until we reach the initial
-      // car's grip.
       if(FLwheelFriction.extremumSlip > FLWextremumSlip){
         FLwheelFriction.extremumSlip = FLWextremumSlip * handbrakeDriftMultiplier * driftingAxis;
         frontLeftCollider.sidewaysFriction = FLwheelFriction;
@@ -787,10 +821,7 @@ public class PrometeoCarController : MonoBehaviour
 
         RRwheelFriction.extremumSlip = RRWextremumSlip * handbrakeDriftMultiplier * driftingAxis;
         rearRightCollider.sidewaysFriction = RRwheelFriction;
-
-        Invoke("RecoverTraction", Time.deltaTime);
-
-      }else if (FLwheelFriction.extremumSlip < FLWextremumSlip){
+      } else {
         FLwheelFriction.extremumSlip = FLWextremumSlip;
         frontLeftCollider.sidewaysFriction = FLwheelFriction;
 
@@ -804,6 +835,7 @@ public class PrometeoCarController : MonoBehaviour
         rearRightCollider.sidewaysFriction = RRwheelFriction;
 
         driftingAxis = 0f;
+        isTractionLocked = false;
       }
     }
 
@@ -850,7 +882,7 @@ public class PrometeoCarController : MonoBehaviour
     void ShiftUp(){
       if(currentGear < numberOfGears){
         currentGear++;
-        lastShiftTime = Time.time;
+        LastShiftTick = Runner.Tick;
       }
     }
 
@@ -858,7 +890,7 @@ public class PrometeoCarController : MonoBehaviour
     void ShiftDown(){
       if(currentGear > -1){
         currentGear--;
-        lastShiftTime = Time.time;
+        LastShiftTick = Runner.Tick;
       }
     }
 
@@ -891,13 +923,14 @@ public class PrometeoCarController : MonoBehaviour
 
       // Automatic shifting logic
       if(transmissionMode == TransmissionMode.Automatic && currentGear >= 1){
-        if (Time.time - lastShiftTime > shiftCooldown) {
+        int shiftCooldownTicks = Mathf.CeilToInt(shiftCooldown / SimulationDeltaTime);
+        if (Runner.Tick - LastShiftTick > shiftCooldownTicks) {
           if(engineRPM >= shiftUpRPM && currentGear < numberOfGears){
             currentGear++;
-            lastShiftTime = Time.time;
+            LastShiftTick = Runner.Tick;
           } else if(engineRPM <= shiftDownRPM && currentGear > 1){
             currentGear--;
-            lastShiftTime = Time.time;
+            LastShiftTick = Runner.Tick;
           }
         }
       }

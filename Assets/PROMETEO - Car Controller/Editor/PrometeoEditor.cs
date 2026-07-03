@@ -52,6 +52,9 @@ public class PrometeoEditor : Editor{
   private SerializedProperty shiftUpRPM;
   private SerializedProperty shiftDownRPM;
 
+  // CAMERA
+  private SerializedProperty localCamera;
+
   private void OnEnable(){
     prometeo = (PrometeoCarController)target;
     SO = new SerializedObject(target);
@@ -85,6 +88,8 @@ public class PrometeoEditor : Editor{
     idleRPM = SO.FindProperty("idleRPM");
     shiftUpRPM = SO.FindProperty("shiftUpRPM");
     shiftDownRPM = SO.FindProperty("shiftDownRPM");
+
+    localCamera = SO.FindProperty("localCamera");
 
   }
 
@@ -169,6 +174,11 @@ public class PrometeoEditor : Editor{
     }
 
     //END
+
+    GUILayout.Space(25);
+    GUILayout.Label("CAMERA", EditorStyles.boldLabel);
+    GUILayout.Space(10);
+    EditorGUILayout.PropertyField(localCamera, new GUIContent("Local Camera: "));
 
     GUILayout.Space(10);
     SO.ApplyModifiedProperties();
