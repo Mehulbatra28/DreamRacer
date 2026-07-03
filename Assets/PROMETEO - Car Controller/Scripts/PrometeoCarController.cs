@@ -356,23 +356,16 @@ public class PrometeoCarController : MonoBehaviour
       bool isAccelerating = controls.Driving.Accelerate.IsPressed();
       bool isReversing = controls.Driving.Reverse.IsPressed();
       
-      // Use the Action map, but add a bulletproof fallback straight to the keyboard spacebar just in case the binding fails
-      bool isBraking = controls.Driving.HandBrake.IsPressed() || (Keyboard.current != null && Keyboard.current.spaceKey.isPressed);
-      bool wasBrakingReleased = controls.Driving.HandBrake.WasReleasedThisFrame() || (Keyboard.current != null && Keyboard.current.spaceKey.wasReleasedThisFrame);
+      // Read handbrake inputs from input system
+      bool isBraking = controls.Driving.HandBrake.IsPressed();
+      bool wasBrakingReleased = controls.Driving.HandBrake.WasReleasedThisFrame();
       
       float steeringValue = controls.Driving.Steer.ReadValue<float>();
 
-      // Read gear shift inputs (keyboard fallback for when input actions haven't been regenerated)
-      bool shiftUpInput = (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame);
-      bool shiftDownInput = (Keyboard.current != null && Keyboard.current.qKey.wasPressedThisFrame);
-      bool clutchHeld = (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed);
-
-      // Gamepad gear shift inputs
-      if(Gamepad.current != null){
-        if(Gamepad.current.rightShoulder.wasPressedThisFrame) shiftUpInput = true;
-        if(Gamepad.current.leftShoulder.wasPressedThisFrame) shiftDownInput = true;
-        if(Gamepad.current.buttonSouth.isPressed) clutchHeld = true;
-      }
+      // Read gear shift inputs from input system
+      bool shiftUpInput = controls.Driving.ShiftUp.WasPressedThisFrame();
+      bool shiftDownInput = controls.Driving.ShiftDown.WasPressedThisFrame();
+      bool clutchHeld = controls.Driving.Clutch.IsPressed();
 
       // Handle gear shifting based on transmission mode
       HandleGearInput(shiftUpInput, shiftDownInput, clutchHeld);
