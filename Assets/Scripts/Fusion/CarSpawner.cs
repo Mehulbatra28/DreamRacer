@@ -7,6 +7,7 @@ using UnityEngine;
 public class CarSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private NetworkPrefabRef carPrefab;
+    [SerializeField] private Transform[] spawnPoints; // Assign custom spawn locations in the Inspector
     private Dictionary<PlayerRef, NetworkObject> spawnedCars = new Dictionary<PlayerRef, NetworkObject>();
 
     private void Start()
@@ -30,20 +31,34 @@ public class CarSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer)
+        if (player == runner.LocalPlayer)
         {
-            // Spawn a car for the joined player. We use PlayerId * 5 to give them space!
+            // Default fallback position
             Vector3 spawnPosition = new Vector3(player.PlayerId * 5f, 2f, 0f); 
-            NetworkObject networkCar = runner.Spawn(carPrefab, spawnPosition, Quaternion.identity, player);
+            Quaternion spawnRotation = Quaternion.identity;
+
+            // If you have assigned spawn points in the inspector, use them!
+            if (spawnPoints != null && spawnPoints.Length > 0)
+            {
+                // Wrap around safely if there are more players than spawn points
+                int spawnIndex = player.PlayerId % spawnPoints.Length;
+                spawnPosition = spawnPoints[spawnIndex].position;
+                spawnRotation = spawnPoints[spawnIndex].rotation;
+            }
+
+            NetworkObject networkCar = runner.Spawn(carPrefab, spawnPosition, spawnRotation, player);
             spawnedCars.Add(player, networkCar);
         }
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer && spawnedCars.TryGetValue(player, out NetworkObject networkCar))
+        if (spawnedCars.TryGetValue(player, out NetworkObject networkCar))
         {
-            runner.Despawn(networkCar);
+            if (networkCar != null && networkCar.HasStateAuthority)
+            {
+                runner.Despawn(networkCar);
+            }
             spawnedCars.Remove(player);
         }
     }

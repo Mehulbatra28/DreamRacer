@@ -144,8 +144,10 @@ public class PrometeoCarController : NetworkBehaviour
       [Space(10)]
       public GameObject localCamera; // Assign your Cinemachine camera here in the Inspector
 
-      [Networked] private NetworkButtons PrevButtons { get; set; }
-      [Networked] private int LastShiftTick { get; set; }
+      private CarControls controls;
+      private bool prevShiftUp;
+      private bool prevShiftDown;
+      private float lastShiftTime;
 
       [Networked] public float NetCarSpeed { get; set; }
       [Networked] public float NetEngineRPM { get; set; }
@@ -154,35 +156,22 @@ public class PrometeoCarController : NetworkBehaviour
       [Networked] public float NetWheelRPM { get; set; }
       [Networked] public float NetSteeringAngle { get; set; }
 
-    public override void Spawned()
+    void Awake()
     {
-        if (localCamera != null)
-        {
-            localCamera.SetActive(HasInputAuthority);
+        controls = new CarControls();
+        carRigidbody = gameObject.GetComponent<Rigidbody>();
+        
+        TryAutoAssignWheelReferences();
+
+        if(frontLeftCollider == null || frontRightCollider == null || rearLeftCollider == null || rearRightCollider == null){
+          Debug.LogError("PrometeoCarController is missing one or more WheelCollider references.");
+          enabled = false;
+          return;
         }
-    }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-      carRigidbody = gameObject.GetComponent<Rigidbody>();
-      TryAutoAssignWheelReferences();
+        carRigidbody.centerOfMass = bodyMassCenter;
 
-      if(frontLeftCollider == null || frontRightCollider == null || rearLeftCollider == null || rearRightCollider == null){
-        Debug.LogError("PrometeoCarController is missing one or more WheelCollider references.");
-        enabled = false;
-        return;
-      }
-
-      //In this part, we set the 'carRigidbody' value with the Rigidbody attached to this
-      //gameObject. Also, we define the center of mass of the car with the Vector3 given
-      //in the inspector.
-      carRigidbody.centerOfMass = bodyMassCenter;
-
-      //Initial setup to calculate the drift value of the car. This part could look a bit
-      //complicated, but do not be afraid, the only thing we're doing here is to save the default
-      //friction values of the car wheels so we can set an appropiate drifting value later.
-      FLwheelFriction = new WheelFrictionCurve ();
+        FLwheelFriction = new WheelFrictionCurve ();
         FLwheelFriction.extremumSlip = frontLeftCollider.sidewaysFriction.extremumSlip;
         FLWextremumSlip = frontLeftCollider.sidewaysFriction.extremumSlip;
         FLwheelFriction.extremumValue = frontLeftCollider.sidewaysFriction.extremumValue;
@@ -217,6 +206,23 @@ public class PrometeoCarController : NetworkBehaviour
         SnapCarToGround();
         ResetWheelPhysicsState();
 
+    }
+
+    public override void Spawned()
+    {
+        if (localCamera != null)
+        {
+            localCamera.SetActive(HasStateAuthority);
+        }
+        if (HasStateAuthority)
+        {
+            controls.Enable();
+        }
+    }
+
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        controls.Disable();
     }
 
     void TryAutoAssignWheelReferences(){
@@ -329,13 +335,12 @@ public class PrometeoCarController : NetworkBehaviour
       wheelMesh.transform.rotation = collider.transform.rotation;
     }
 
-    float SimulationDeltaTime => Runner != null ? Runner.DeltaTime : Time.fixedDeltaTime;
+    float SimulationDeltaTime => Time.fixedDeltaTime;
 
-    // FixedUpdateNetwork is called by Fusion's simulation tick
-    public override void FixedUpdateNetwork()
+    // FixedUpdate is called by Unity's physics tick
+    void FixedUpdate()
     {
-      // State authority simulates all cars; input authority simulates locally for client prediction.
-      if (!HasStateAuthority && !HasInputAuthority)
+      if (!HasStateAuthority)
       {
         return;
       }
@@ -360,21 +365,20 @@ public class PrometeoCarController : NetworkBehaviour
       bool shiftDownInput = false;
       bool clutchHeld = false;
 
-      if (GetInput(out NetworkCarInput input))
-      {
-          isAccelerating = input.Buttons.IsSet(NetworkCarInput.ACCELERATE);
-          isReversing = input.Buttons.IsSet(NetworkCarInput.REVERSE);
+      isAccelerating = controls.Driving.Accelerate.IsPressed();
+      isReversing = controls.Driving.Reverse.IsPressed();
+      isBraking = controls.Driving.HandBrake.IsPressed();
+      steeringValue = controls.Driving.Steer.ReadValue<float>();
+      
+      bool currentShiftUp = controls.Driving.ShiftUp.IsPressed();
+      bool currentShiftDown = controls.Driving.ShiftDown.IsPressed();
+      
+      shiftUpInput = !prevShiftUp && currentShiftUp;
+      shiftDownInput = !prevShiftDown && currentShiftDown;
+      clutchHeld = controls.Driving.Clutch.IsPressed();
 
-          isBraking = input.Buttons.IsSet(NetworkCarInput.BRAKE);
-
-          steeringValue = input.Steering;
-
-          shiftUpInput = !PrevButtons.IsSet(NetworkCarInput.SHIFT_UP) && input.Buttons.IsSet(NetworkCarInput.SHIFT_UP);
-          shiftDownInput = !PrevButtons.IsSet(NetworkCarInput.SHIFT_DOWN) && input.Buttons.IsSet(NetworkCarInput.SHIFT_DOWN);
-          clutchHeld = input.Buttons.IsSet(NetworkCarInput.CLUTCH);
-
-          PrevButtons = input.Buttons;
-      }
+      prevShiftUp = currentShiftUp;
+      prevShiftDown = currentShiftDown;
 
       // Handle gear shifting based on transmission mode
       HandleGearInput(shiftUpInput, shiftDownInput, clutchHeld);
@@ -453,7 +457,7 @@ public class PrometeoCarController : NetworkBehaviour
       }
 
       // Push telemetry data to UIManager singleton for the local player
-      if(HasInputAuthority && UIManager.Instance != null){
+      if(HasStateAuthority && UIManager.Instance != null){
         UIManager.Instance.UpdateCarUI(
           carSpeed, currentGear, engineRPM,
           maxEngineRPM, clutchEngaged, transmissionMode
@@ -882,7 +886,7 @@ public class PrometeoCarController : NetworkBehaviour
     void ShiftUp(){
       if(currentGear < numberOfGears){
         currentGear++;
-        LastShiftTick = Runner.Tick;
+        lastShiftTime = Time.time;
       }
     }
 
@@ -890,7 +894,7 @@ public class PrometeoCarController : NetworkBehaviour
     void ShiftDown(){
       if(currentGear > -1){
         currentGear--;
-        LastShiftTick = Runner.Tick;
+        lastShiftTime = Time.time;
       }
     }
 
@@ -923,14 +927,13 @@ public class PrometeoCarController : NetworkBehaviour
 
       // Automatic shifting logic
       if(transmissionMode == TransmissionMode.Automatic && currentGear >= 1){
-        int shiftCooldownTicks = Mathf.CeilToInt(shiftCooldown / SimulationDeltaTime);
-        if (Runner.Tick - LastShiftTick > shiftCooldownTicks) {
+        if (Time.time - lastShiftTime > shiftCooldown) {
           if(engineRPM >= shiftUpRPM && currentGear < numberOfGears){
             currentGear++;
-            LastShiftTick = Runner.Tick;
+            lastShiftTime = Time.time;
           } else if(engineRPM <= shiftDownRPM && currentGear > 1){
             currentGear--;
-            LastShiftTick = Runner.Tick;
+            lastShiftTime = Time.time;
           }
         }
       }

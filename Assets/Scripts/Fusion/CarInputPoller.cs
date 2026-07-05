@@ -44,18 +44,7 @@ public class CarInputPoller : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        var myInput = new NetworkCarInput();
-
-        myInput.Steering = controls.Driving.Steer.ReadValue<float>();
-        
-        myInput.Buttons.Set(NetworkCarInput.ACCELERATE, controls.Driving.Accelerate.IsPressed());
-        myInput.Buttons.Set(NetworkCarInput.REVERSE, controls.Driving.Reverse.IsPressed());
-        myInput.Buttons.Set(NetworkCarInput.BRAKE, controls.Driving.HandBrake.IsPressed());
-        myInput.Buttons.Set(NetworkCarInput.SHIFT_UP, controls.Driving.ShiftUp.IsPressed());
-        myInput.Buttons.Set(NetworkCarInput.SHIFT_DOWN, controls.Driving.ShiftDown.IsPressed());
-        myInput.Buttons.Set(NetworkCarInput.CLUTCH, controls.Driving.Clutch.IsPressed());
-
-        input.Set(myInput);
+        // In Shared Mode, we don't use OnInput. Each client reads input locally in Update/FixedUpdate.
     }
 
     #region Unused Callbacks

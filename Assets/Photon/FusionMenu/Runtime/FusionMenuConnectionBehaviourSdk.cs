@@ -83,7 +83,7 @@ namespace FusionDemo {
       
       // Scene info
       var sceneInfo = new NetworkSceneInfo();
-      sceneInfo.AddSceneRef(sceneManager.GetSceneRef(connectArgs.Scene.ScenePath), LoadSceneMode.Additive);
+      sceneInfo.AddSceneRef(sceneManager.GetSceneRef(connectArgs.Scene.ScenePath), LoadSceneMode.Single);
       args.Scene = sceneInfo;
       
       // Cancellation Token
@@ -124,9 +124,8 @@ namespace FusionDemo {
 
       if (peerMode is NetworkProjectConfig.PeerModes.Multiple) return;
       
-      for (int i = SceneManager.sceneCount-1; i > 0; i--) {
-        SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(i));
-      }
+      // Since we load the game scene in Single mode, we must reload the menu scene (index 0) upon disconnect
+      SceneManager.LoadScene(0);
     }
     
     public override Task<List<FusionMenuOnlineRegion>> RequestAvailableOnlineRegionsAsync(FusionMenuConnectArgs connectArgs) {
@@ -139,19 +138,8 @@ namespace FusionDemo {
     }
     
     private GameMode ResolveGameMode(FusionMenuConnectArgs args) {
-      bool isSharedSession = args.Scene.SceneName.Contains("Shared");
-      if (args.Creating) {
-        // Create session
-        return isSharedSession ? GameMode.Shared : GameMode.Host;
-      }
-
-      if (string.IsNullOrEmpty(args.Session)) {
-        // QuickJoin
-        return isSharedSession ? GameMode.Shared : GameMode.AutoHostOrClient;
-      }
-
-      // Join session
-      return isSharedSession ? GameMode.Shared : GameMode.Client;
+      // Force Shared Mode for this game
+      return GameMode.Shared;
     }
 
     private ShutdownReason ResolveShutdownReason(int reason) {
