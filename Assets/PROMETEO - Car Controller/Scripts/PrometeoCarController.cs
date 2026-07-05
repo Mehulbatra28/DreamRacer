@@ -217,6 +217,7 @@ public class PrometeoCarController : NetworkBehaviour
         if (HasStateAuthority)
         {
             controls.Enable();
+            Minimap.LocalPlayer = this.transform;
         }
     }
 
