@@ -3,21 +3,23 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Miner
+  - Zombie
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Roads
   - Water
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - RCCP_Vehicle
+  - RCCP_WheelCollider
+  - RCCP_DetachablePart
+  - RCCP_Prop
+  - RCCP_Obstacle
   - 
   - 
   - 

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: de65714eebd3ee949b739ff8a63350b9
+timeCreated: 1439124517
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Prefabs/Misc/chest.prefab
+  uploadId: 342305

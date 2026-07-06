@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: bb86be1dabc25a142b093a3c9fe6c374
+timeCreated: 1517334546
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_Dynamic_Obstacles/Animations/Doors/CSmall
+    Rotation.anim
+  uploadId: 342305

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: cb7c1a8482a67664e95e13c16daf3adf
+timeCreated: 1487856508
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Cameras/Effects/ImageEffects/Readme.txt
+  uploadId: 342305

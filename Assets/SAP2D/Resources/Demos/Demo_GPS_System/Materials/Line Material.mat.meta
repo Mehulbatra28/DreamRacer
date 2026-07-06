@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: cc15f1d657086a24ea54029e6317d808
+timeCreated: 1528969909
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Materials/Line Material.mat
+  uploadId: 342305

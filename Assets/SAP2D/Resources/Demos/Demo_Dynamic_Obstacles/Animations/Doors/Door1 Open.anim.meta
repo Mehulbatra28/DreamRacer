@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 21b814d938035be4da6cdd86aa9d852f
+timeCreated: 1517242162
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_Dynamic_Obstacles/Animations/Doors/Door1
+    Open.anim
+  uploadId: 342305

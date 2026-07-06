@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ac173129f3b4cac49995d8629de0997d
+timeCreated: 1439133470
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Prefabs/Ground/Right/right
+    top 2.prefab
+  uploadId: 342305

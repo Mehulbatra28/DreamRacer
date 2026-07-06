@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 00b0df14056944f468bb0984329ae7ff
+timeCreated: 1439124421
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Prefabs/Border/Black/boss.prefab
+  uploadId: 342305

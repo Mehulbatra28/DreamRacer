@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 4e225097d222cbd44add97647321e225
+timeCreated: 1517334546
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_Dynamic_Obstacles/Animations/Doors/Circle
+    Small.controller
+  uploadId: 342305

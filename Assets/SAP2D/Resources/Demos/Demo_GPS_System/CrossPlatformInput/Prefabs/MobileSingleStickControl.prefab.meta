@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 9529ecc3d479da5499993355e6c2cb4f
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/CrossPlatformInput/Prefabs/MobileSingleStickControl.prefab
+  uploadId: 342305

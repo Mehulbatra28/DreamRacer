@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: c4525c124bff31b44aca47c14ba6034b
+timeCreated: 1528634964
+licenseType: Store
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/GPS Demo.unity
+  uploadId: 342305

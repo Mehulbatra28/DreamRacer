@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: c51c09bcabc8c1441afe23a1da5fb6d8
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Vehicles/Car/CarGuidelines.txt
+  uploadId: 342305

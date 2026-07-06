@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: b238cc13e9896f04eb5e06978d2b393e
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Cameras/Effects/Projectors/Guidelines.txt
+  uploadId: 342305

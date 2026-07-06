@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 31f6763de0920574092c8a69a66c717e
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Cameras/Effects/TessellationShaders/Scenes/TessellationSample.unity
+  uploadId: 342305

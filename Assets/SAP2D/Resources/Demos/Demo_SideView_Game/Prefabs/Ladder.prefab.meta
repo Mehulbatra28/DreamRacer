@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0aff0b7761718f84c900db4f6cae5867
+timeCreated: 1516630035
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Prefabs/Ladder.prefab
+  uploadId: 342305

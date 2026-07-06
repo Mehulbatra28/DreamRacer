@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8d42b30e5733d88468a95185db219cb5
+timeCreated: 1516451854
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Animations/Miner/MinerClimb.anim
+  uploadId: 342305

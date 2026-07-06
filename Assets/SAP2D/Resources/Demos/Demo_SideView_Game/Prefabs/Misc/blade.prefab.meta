@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f45b9fbac8a6f234eb3d74cdd3e38a9b
+timeCreated: 1439124529
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Prefabs/Misc/blade.prefab
+  uploadId: 342305

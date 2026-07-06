@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b0e8310454c8254478e5399c376f912e
+timeCreated: 1517243466
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_Dynamic_Obstacles/Prefabs/door1.prefab
+  uploadId: 342305

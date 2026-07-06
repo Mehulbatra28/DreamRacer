@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: b7f28303fec9edf43ac818b45d2240ce
+timeCreated: 1516449487
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Animations/Miner/MinerThrow
+    Left.anim
+  uploadId: 342305

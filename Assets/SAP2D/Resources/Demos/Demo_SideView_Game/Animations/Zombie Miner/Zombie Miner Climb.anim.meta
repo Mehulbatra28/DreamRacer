@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d2dc04f701b3c37499c7d6f7acc8d60a
+timeCreated: 1517061808
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Animations/Zombie Miner/Zombie
+    Miner Climb.anim
+  uploadId: 342305

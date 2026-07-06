@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 94b04ec3bda6b7747aa53936ef3b0ae2
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Cameras/Scripts/ProtectCameraFromWallClip.cs
+  uploadId: 342305

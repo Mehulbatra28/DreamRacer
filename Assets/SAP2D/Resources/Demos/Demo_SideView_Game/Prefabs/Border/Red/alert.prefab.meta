@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 738a31ae6726a0d47875a2c9f41a9309
+timeCreated: 1439124478
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Prefabs/Border/Red/alert.prefab
+  uploadId: 342305

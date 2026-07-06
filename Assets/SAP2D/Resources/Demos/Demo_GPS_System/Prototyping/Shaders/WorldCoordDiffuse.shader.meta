@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 406a976191e8366459222b654c60e1f8
+ShaderImporter:
+  defaultTextures: []
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Prototyping/Shaders/WorldCoordDiffuse.shader
+  uploadId: 342305

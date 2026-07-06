@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 174090ae7f9eff84abe76f0ff062efac
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/CrossPlatformInput/Prefabs/CarTiltControls.prefab
+  uploadId: 342305

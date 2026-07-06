@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: c7d1a73cf0f423947bae4e238665d9c5
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Cameras/Effects/Projectors/Materials/GridProjector.mat
+  uploadId: 342305

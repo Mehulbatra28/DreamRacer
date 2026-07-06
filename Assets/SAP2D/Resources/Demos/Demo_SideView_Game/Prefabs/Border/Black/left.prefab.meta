@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6b54553f6f166c643898f331b892bf61
+timeCreated: 1439124416
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Prefabs/Border/Black/left.prefab
+  uploadId: 342305

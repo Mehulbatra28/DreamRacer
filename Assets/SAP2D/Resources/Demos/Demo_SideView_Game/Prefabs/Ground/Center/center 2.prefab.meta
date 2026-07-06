@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: eb4633dddf5e49241a95e78c03296956
+timeCreated: 1439131801
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Prefabs/Ground/Center/center
+    2.prefab
+  uploadId: 342305

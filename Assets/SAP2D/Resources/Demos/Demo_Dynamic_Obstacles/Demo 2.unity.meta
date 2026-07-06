@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9d9c8c8762da74f4587276e78df15c9e
+timeCreated: 1517336077
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_Dynamic_Obstacles/Demo 2.unity
+  uploadId: 342305

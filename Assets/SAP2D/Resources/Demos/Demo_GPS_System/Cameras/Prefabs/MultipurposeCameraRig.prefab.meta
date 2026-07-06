@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: baec086904791744185aaa07a6cf55c2
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Cameras/Prefabs/MultipurposeCameraRig.prefab
+  uploadId: 342305

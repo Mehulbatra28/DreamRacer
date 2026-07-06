@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 3ea65b38d485c374caa584a03f1de571
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Vehicles/Car/Scripts/CarController.cs
+  uploadId: 342305

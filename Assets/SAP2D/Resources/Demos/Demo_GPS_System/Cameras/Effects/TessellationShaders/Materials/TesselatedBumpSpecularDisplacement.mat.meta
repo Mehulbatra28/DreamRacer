@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 26d8bdbc8646bde48b05fbaacaaa6577
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Cameras/Effects/TessellationShaders/Materials/TesselatedBumpSpecularDisplacement.mat
+  uploadId: 342305

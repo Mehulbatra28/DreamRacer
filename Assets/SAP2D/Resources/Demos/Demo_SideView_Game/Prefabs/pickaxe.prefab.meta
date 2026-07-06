@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0aea898e2be2342429c51072412e9c83
+timeCreated: 1516896232
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Prefabs/pickaxe.prefab
+  uploadId: 342305

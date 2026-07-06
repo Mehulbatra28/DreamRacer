@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 31a0a1524bab22647a64bc80f5985a3b
+timeCreated: 1439124470
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Prefabs/Border/Red/left.prefab
+  uploadId: 342305

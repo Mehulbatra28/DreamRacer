@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a62942d9af3f36d448094c6ed1f214dd
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Cameras/Scripts/TargetFieldOfView.cs
+  uploadId: 342305

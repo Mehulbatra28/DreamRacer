@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: a3b997593a4f12c4c991490593f3b513
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/CrossPlatformInput/CrossPlatformInputGuidelines.txt
+  uploadId: 342305

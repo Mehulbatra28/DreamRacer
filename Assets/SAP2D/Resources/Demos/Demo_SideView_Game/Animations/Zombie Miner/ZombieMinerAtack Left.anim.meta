@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a1d0a67d2410b4f4497b84fa2cd312f1
+timeCreated: 1517063129
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Animations/Zombie Miner/ZombieMinerAtack
+    Left.anim
+  uploadId: 342305

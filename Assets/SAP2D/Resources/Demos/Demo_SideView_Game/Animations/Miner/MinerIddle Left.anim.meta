@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8f8af5f5a2ffe1641a025320fa6c99e8
+timeCreated: 1516445168
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Animations/Miner/MinerIddle
+    Left.anim
+  uploadId: 342305

@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 999388b68bb99b44099461bfbed94358
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/CrossPlatformInput/Prefabs/MobileTiltControlRig.prefab
+  uploadId: 342305

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0aa723bf44e117b45bf704a8e6e8601c
+timeCreated: 1517407554
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_Dynamic_Obstacles/Prefabs/Wall.prefab
+  uploadId: 342305

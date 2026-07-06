@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 20fa55eb64c5cea4aa3c71ae19c434bf
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Vehicles/Car/Scripts/CarAudio.cs
+  uploadId: 342305

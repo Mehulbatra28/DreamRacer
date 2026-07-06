@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: eb2d86a3ca333fe418f2d2c80e78d685
+timeCreated: 1516443837
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Scripts/Miner.cs
+  uploadId: 342305

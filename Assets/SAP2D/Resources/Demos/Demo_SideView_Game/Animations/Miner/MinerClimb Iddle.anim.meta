@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 596493f7636b8b540a2ec2a379fe33d4
+timeCreated: 1516894864
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Animations/Miner/MinerClimb
+    Iddle.anim
+  uploadId: 342305

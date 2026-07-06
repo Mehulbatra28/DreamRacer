@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 528d759734e8de54b9e745f404326fe4
+timeCreated: 1439124473
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Prefabs/Border/Red/down.prefab
+  uploadId: 342305

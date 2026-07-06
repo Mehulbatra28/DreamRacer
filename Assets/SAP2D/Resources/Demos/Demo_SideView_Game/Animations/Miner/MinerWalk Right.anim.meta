@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: f2e650f38de74224e9f21c6a8506479f
+timeCreated: 1516444863
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Animations/Miner/MinerWalk
+    Right.anim
+  uploadId: 342305

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 24395f8c418bdaa429321751f7fbb571
+timeCreated: 1516209210
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Mine Exapmle.unity
+  uploadId: 342305

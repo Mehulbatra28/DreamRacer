@@ -6,18 +6,29 @@ public class Minimap : MonoBehaviour
     public RectTransform mapImage;      // The giant map image inside the mask
     public RectTransform playerIcon;    // The arrow icon
 
-    [Header("Map Settings")]
-    [Tooltip("The X and Z world coordinates that the center of your map image represents. (Based on your camera position!)")]
-    public Vector2 mapWorldCenter = new Vector2(453.7f, 508f);
-    
-    [Tooltip("Adjust this to scale the map movement perfectly with your car.")]
-    public float mapScale = 1.98f;
+    [Header("Settings")]
+    public bool rotateWithPlayer = true;
+
+    [Header("AAA Baked Data (DO NOT EDIT)")]
+    [Tooltip("These values are injected automatically by the AAA Map Baker tool!")]
+    public Vector2 mapWorldCenter;
+    public float mapScale;
 
     // The transform of the local car
     public static Transform LocalPlayer;
 
     void Update()
     {
+        if (LocalPlayer == null)
+        {
+            PrometeoCarController car = FindObjectOfType<PrometeoCarController>();
+            if (car != null) 
+            {
+                LocalPlayer = car.transform;
+                Debug.Log("[Minimap] Found Local Player Car: " + car.gameObject.name);
+            }
+        }
+
         if (LocalPlayer == null) return;
 
         // 1. Calculate player's offset from the center of the world map
@@ -25,11 +36,38 @@ public class Minimap : MonoBehaviour
         float offsetX = playerPos.x - mapWorldCenter.x;
         float offsetZ = playerPos.z - mapWorldCenter.y;
 
-        // 2. Move the map image in the OPPOSITE direction so the player stays centered
-        mapImage.anchoredPosition = new Vector2(-offsetX * mapScale, -offsetZ * mapScale);
+        Vector2 offsetPos = new Vector2(offsetX * mapScale, offsetZ * mapScale);
 
-        // 3. Rotate the Player Icon to match the car's rotation
-        // (Unity's Y rotation goes clockwise, UI Z rotation goes counter-clockwise)
-        playerIcon.localEulerAngles = new Vector3(0, 0, -LocalPlayer.eulerAngles.y + 90f);
+        if (rotateWithPlayer)
+        {
+            float angle = LocalPlayer.eulerAngles.y;
+            float angleRad = angle * Mathf.Deg2Rad;
+            float cos = Mathf.Cos(angleRad);
+            float sin = Mathf.Sin(angleRad);
+
+            // Rotate the offset by the map's rotation angle (which is the car's Y rotation)
+            Vector2 rotatedOffset = new Vector2(
+                offsetPos.x * cos - offsetPos.y * sin,
+                offsetPos.x * sin + offsetPos.y * cos
+            );
+
+            // Move the map image in the OPPOSITE direction so the player stays centered
+            mapImage.anchoredPosition = -rotatedOffset;
+
+            // Rotate the map image to match the car's rotation
+            mapImage.localEulerAngles = new Vector3(0, 0, angle);
+
+            // Keep the Player Icon pointing UP
+            playerIcon.localEulerAngles = new Vector3(0, 0, 90f);
+        }
+        else
+        {
+            // Move the map image in the OPPOSITE direction so the player stays centered
+            mapImage.anchoredPosition = -offsetPos;
+            mapImage.localEulerAngles = Vector3.zero;
+
+            // Rotate the Player Icon to match the car's rotation
+            playerIcon.localEulerAngles = new Vector3(0, 0, -LocalPlayer.eulerAngles.y + 90f);
+        }
     }
 }

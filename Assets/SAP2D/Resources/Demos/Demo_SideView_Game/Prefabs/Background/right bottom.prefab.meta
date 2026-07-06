@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 7e4bddc9d4df71442a003a4da8ebe312
+timeCreated: 1439126105
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Prefabs/Background/right
+    bottom.prefab
+  uploadId: 342305

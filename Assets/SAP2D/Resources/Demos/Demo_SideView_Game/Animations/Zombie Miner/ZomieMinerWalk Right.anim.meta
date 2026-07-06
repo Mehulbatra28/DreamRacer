@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8f8735a6f74b7f345ad6ab2e983ac967
+timeCreated: 1517056717
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_SideView_Game/Animations/Zombie Miner/ZomieMinerWalk
+    Right.anim
+  uploadId: 342305

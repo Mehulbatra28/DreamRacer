@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 86f4276d9602ff547968823666aa5699
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Cameras/CameraGuidelines.txt
+  uploadId: 342305

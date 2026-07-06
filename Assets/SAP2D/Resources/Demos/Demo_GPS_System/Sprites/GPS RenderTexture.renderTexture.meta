@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: bcaa2bb3d46cc0549a5de7c5749fbe5c
+timeCreated: 1528637301
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 8400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 109184
+  packageName: SAP2D Beta
+  packageVersion: 1.1.1
+  assetPath: Assets/SAP2D/Resources/Demos/Demo_GPS_System/Sprites/GPS RenderTexture.renderTexture
+  uploadId: 342305
