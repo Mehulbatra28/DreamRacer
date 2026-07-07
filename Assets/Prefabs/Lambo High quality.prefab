@@ -2244,6 +2244,7 @@ GameObject:
   - component: {fileID: 8588235322257297860}
   - component: {fileID: 7912154158757324103}
   - component: {fileID: 2014014334314501366}
+  - component: {fileID: 2642847004349812736}
   m_Layer: 0
   m_Name: Lambo High quality
   m_TagString: Untagged
@@ -2387,6 +2388,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 539274117026388188}
   - {fileID: 2014014334314501366}
+  - {fileID: 2642847004349812736}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &2014014334314501366
 MonoBehaviour:
@@ -2411,6 +2413,22 @@ MonoBehaviour:
     Position: 0.01
     Rotation: 0.01
     Scale: 0.01
+--- !u!114 &2642847004349812736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2796584861821135080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92a8c5748f382a345a9855f3270d0674, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _GlobalWaypoint: {x: 0, y: 0, z: 0}
+  _IsGlobalWaypointActive:
+    _value: 0
+  globalWaypoint3DPrefab: {fileID: 0}
 --- !u!1 &3142562876734194319
 GameObject:
   m_ObjectHideFlags: 0

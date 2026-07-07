@@ -154,6 +154,15 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenMap"",
+                    ""type"": ""Button"",
+                    ""id"": ""557e95fc-a98f-404e-99f4-31b1efc3ec4a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -475,6 +484,39 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                     ""action"": ""Clutch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2711ddac-3c3d-4cf6-831a-4027611bbb07"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6c3f6c4d-af5f-4072-84f9-b63e03ab08ba"",
+                    ""path"": ""<DualShockGamepad>/touchpadButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9c11316d-11ab-415f-a500-560e6ffde271"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -490,6 +532,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
         m_Driving_ShiftUp = m_Driving.FindAction("ShiftUp", throwIfNotFound: true);
         m_Driving_ShiftDown = m_Driving.FindAction("ShiftDown", throwIfNotFound: true);
         m_Driving_Clutch = m_Driving.FindAction("Clutch", throwIfNotFound: true);
+        m_Driving_OpenMap = m_Driving.FindAction("OpenMap", throwIfNotFound: true);
     }
 
     ~@CarControls()
@@ -577,6 +620,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Driving_ShiftUp;
     private readonly InputAction m_Driving_ShiftDown;
     private readonly InputAction m_Driving_Clutch;
+    private readonly InputAction m_Driving_OpenMap;
     /// <summary>
     /// Provides access to input actions defined in input action map "Driving".
     /// </summary>
@@ -616,6 +660,10 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Driving/Clutch".
         /// </summary>
         public InputAction @Clutch => m_Wrapper.m_Driving_Clutch;
+        /// <summary>
+        /// Provides access to the underlying input action "Driving/OpenMap".
+        /// </summary>
+        public InputAction @OpenMap => m_Wrapper.m_Driving_OpenMap;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -663,6 +711,9 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
             @Clutch.started += instance.OnClutch;
             @Clutch.performed += instance.OnClutch;
             @Clutch.canceled += instance.OnClutch;
+            @OpenMap.started += instance.OnOpenMap;
+            @OpenMap.performed += instance.OnOpenMap;
+            @OpenMap.canceled += instance.OnOpenMap;
         }
 
         /// <summary>
@@ -695,6 +746,9 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
             @Clutch.started -= instance.OnClutch;
             @Clutch.performed -= instance.OnClutch;
             @Clutch.canceled -= instance.OnClutch;
+            @OpenMap.started -= instance.OnOpenMap;
+            @OpenMap.performed -= instance.OnOpenMap;
+            @OpenMap.canceled -= instance.OnOpenMap;
         }
 
         /// <summary>
@@ -784,5 +838,12 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnClutch(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "OpenMap" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnOpenMap(InputAction.CallbackContext context);
     }
 }
