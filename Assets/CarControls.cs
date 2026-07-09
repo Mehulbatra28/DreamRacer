@@ -163,6 +163,33 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MapLeftClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""a1b2c3d4-0001-0001-0001-000000000001"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MapRightClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""a1b2c3d4-0001-0001-0001-000000000002"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MapDeleteWaypoint"",
+                    ""type"": ""Button"",
+                    ""id"": ""a1b2c3d4-0001-0001-0001-000000000003"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -517,6 +544,39 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                     ""action"": ""OpenMap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b1b2c3d4-0001-0001-0001-000000000011"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MapLeftClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b1b2c3d4-0001-0001-0001-000000000012"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MapRightClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b1b2c3d4-0001-0001-0001-000000000013"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MapDeleteWaypoint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -533,6 +593,9 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
         m_Driving_ShiftDown = m_Driving.FindAction("ShiftDown", throwIfNotFound: true);
         m_Driving_Clutch = m_Driving.FindAction("Clutch", throwIfNotFound: true);
         m_Driving_OpenMap = m_Driving.FindAction("OpenMap", throwIfNotFound: true);
+        m_Driving_MapLeftClick = m_Driving.FindAction("MapLeftClick", throwIfNotFound: true);
+        m_Driving_MapRightClick = m_Driving.FindAction("MapRightClick", throwIfNotFound: true);
+        m_Driving_MapDeleteWaypoint = m_Driving.FindAction("MapDeleteWaypoint", throwIfNotFound: true);
     }
 
     ~@CarControls()
@@ -621,6 +684,9 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Driving_ShiftDown;
     private readonly InputAction m_Driving_Clutch;
     private readonly InputAction m_Driving_OpenMap;
+    private readonly InputAction m_Driving_MapLeftClick;
+    private readonly InputAction m_Driving_MapRightClick;
+    private readonly InputAction m_Driving_MapDeleteWaypoint;
     /// <summary>
     /// Provides access to input actions defined in input action map "Driving".
     /// </summary>
@@ -664,6 +730,18 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Driving/OpenMap".
         /// </summary>
         public InputAction @OpenMap => m_Wrapper.m_Driving_OpenMap;
+        /// <summary>
+        /// Provides access to the underlying input action "Driving/MapLeftClick".
+        /// </summary>
+        public InputAction @MapLeftClick => m_Wrapper.m_Driving_MapLeftClick;
+        /// <summary>
+        /// Provides access to the underlying input action "Driving/MapRightClick".
+        /// </summary>
+        public InputAction @MapRightClick => m_Wrapper.m_Driving_MapRightClick;
+        /// <summary>
+        /// Provides access to the underlying input action "Driving/MapDeleteWaypoint".
+        /// </summary>
+        public InputAction @MapDeleteWaypoint => m_Wrapper.m_Driving_MapDeleteWaypoint;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -714,6 +792,15 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
             @OpenMap.started += instance.OnOpenMap;
             @OpenMap.performed += instance.OnOpenMap;
             @OpenMap.canceled += instance.OnOpenMap;
+            @MapLeftClick.started += instance.OnMapLeftClick;
+            @MapLeftClick.performed += instance.OnMapLeftClick;
+            @MapLeftClick.canceled += instance.OnMapLeftClick;
+            @MapRightClick.started += instance.OnMapRightClick;
+            @MapRightClick.performed += instance.OnMapRightClick;
+            @MapRightClick.canceled += instance.OnMapRightClick;
+            @MapDeleteWaypoint.started += instance.OnMapDeleteWaypoint;
+            @MapDeleteWaypoint.performed += instance.OnMapDeleteWaypoint;
+            @MapDeleteWaypoint.canceled += instance.OnMapDeleteWaypoint;
         }
 
         /// <summary>
@@ -749,6 +836,15 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
             @OpenMap.started -= instance.OnOpenMap;
             @OpenMap.performed -= instance.OnOpenMap;
             @OpenMap.canceled -= instance.OnOpenMap;
+            @MapLeftClick.started -= instance.OnMapLeftClick;
+            @MapLeftClick.performed -= instance.OnMapLeftClick;
+            @MapLeftClick.canceled -= instance.OnMapLeftClick;
+            @MapRightClick.started -= instance.OnMapRightClick;
+            @MapRightClick.performed -= instance.OnMapRightClick;
+            @MapRightClick.canceled -= instance.OnMapRightClick;
+            @MapDeleteWaypoint.started -= instance.OnMapDeleteWaypoint;
+            @MapDeleteWaypoint.performed -= instance.OnMapDeleteWaypoint;
+            @MapDeleteWaypoint.canceled -= instance.OnMapDeleteWaypoint;
         }
 
         /// <summary>
@@ -845,5 +941,26 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnOpenMap(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MapLeftClick" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMapLeftClick(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MapRightClick" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMapRightClick(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MapDeleteWaypoint" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMapDeleteWaypoint(InputAction.CallbackContext context);
     }
 }

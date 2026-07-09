@@ -8,10 +8,6 @@ public class PlayerWaypointTracker : NetworkBehaviour
 
     [Networked]
     public NetworkBool IsGlobalWaypointActive { get; set; }
-
-    // Reference to the WorldMapController to spawn/update markers on the UI map
-    private WorldMapController worldMapController;
-    
     // Optional: a 3D marker in the game world
     public GameObject globalWaypoint3DPrefab;
     private GameObject current3DMarker;
@@ -20,7 +16,6 @@ public class PlayerWaypointTracker : NetworkBehaviour
 
     public override void Spawned()
     {
-        worldMapController = FindObjectOfType<WorldMapController>();
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SnapshotTo, false);
     }
 
@@ -57,9 +52,9 @@ public class PlayerWaypointTracker : NetworkBehaviour
         if (IsGlobalWaypointActive)
         {
             // 1. Tell WorldMapController to show it on the map (for other players)
-            if (!HasInputAuthority && worldMapController != null)
+            if (!HasInputAuthority && WorldMapController.Instance != null)
             {
-                worldMapController.DisplayOtherPlayerGlobalWaypoint(GlobalWaypoint, Object.Id.ToString());
+                WorldMapController.Instance.DisplayOtherPlayerGlobalWaypoint(GlobalWaypoint, Object.Id.ToString());
             }
 
             // 2. Spawn/Move 3D World Marker

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class GPSRouteDisplay : MonoBehaviour
 {
+    public static GPSRouteDisplay Instance { get; private set; }
     public Transform playerCar;
     
     [Header("Line Renderers (Minimap)")]
@@ -11,13 +12,16 @@ public class GPSRouteDisplay : MonoBehaviour
     public UILineRenderer globalLineRenderer; // Should be set to Yellow
     
     [Header("Line Renderers (Big Map)")]
-    public WorldMapController worldMapReference;
     public UILineRenderer bigMapLocalLineRenderer;
     public UILineRenderer bigMapGlobalLineRenderer;
 
     [Header("Settings")]
     public SAP2DPathfindingConfig pathfindingConfig;
-    public Minimap minimapReference; 
+
+    void Awake()
+    {
+        Instance = this;
+    }
     
     private float updateTimer = 0f;
     private float startDelay = 1.0f; // Wait 1 second before first path
@@ -46,7 +50,7 @@ public class GPSRouteDisplay : MonoBehaviour
             }
         }
 
-        if (playerCar == null || minimapReference == null || pathfindingConfig == null)
+        if (playerCar == null || Minimap.Instance == null || pathfindingConfig == null)
             return;
 
         // Delay start by 1 second to ensure all Road meshes and colliders have spawned via Network/Physics
@@ -108,17 +112,25 @@ public class GPSRouteDisplay : MonoBehaviour
         }
 
         // Draw Lines every frame for smoothness
-        DrawLine(localLineRenderer, currentLocalPath, hasLocalDestination, "Minimap Local", minimapReference.mapWorldCenter, minimapReference.mapScale);
-        DrawLine(globalLineRenderer, currentGlobalPath, hasGlobalDestination, "Minimap Global", minimapReference.mapWorldCenter, minimapReference.mapScale);
+        // Minimap uses mapScale directly (calibrated by the baker for the minimap rect)
+        DrawLine(localLineRenderer, currentLocalPath, hasLocalDestination, "Minimap Local", Minimap.Instance.mapWorldCenter, Minimap.Instance.mapScale);
+        DrawLine(globalLineRenderer, currentGlobalPath, hasGlobalDestination, "Minimap Global", Minimap.Instance.mapWorldCenter, Minimap.Instance.mapScale);
 
-        if (worldMapReference != null)
+        // Big map uses GetBigMapScale() which accounts for different rect size
+        if (WorldMapController.Instance != null)
         {
-            DrawLine(bigMapLocalLineRenderer, currentLocalPath, hasLocalDestination, "BigMap Local", worldMapReference.mapWorldCenter, worldMapReference.mapScale);
-            DrawLine(bigMapGlobalLineRenderer, currentGlobalPath, hasGlobalDestination, "BigMap Global", worldMapReference.mapWorldCenter, worldMapReference.mapScale);
+            Vector2 bigMapScale = WorldMapController.Instance.GetBigMapScale();
+            DrawLine(bigMapLocalLineRenderer, currentLocalPath, hasLocalDestination, "BigMap Local", WorldMapController.Instance.mapWorldCenter, bigMapScale.x, bigMapScale.y);
+            DrawLine(bigMapGlobalLineRenderer, currentGlobalPath, hasGlobalDestination, "BigMap Global", WorldMapController.Instance.mapWorldCenter, bigMapScale.x, bigMapScale.y);
         }
     }
 
     private void DrawLine(UILineRenderer lineRenderer, Vector2[] path, bool isActive, string debugName, Vector2 mapCenter, float mapScale)
+    {
+        DrawLine(lineRenderer, path, isActive, debugName, mapCenter, mapScale, mapScale);
+    }
+
+    private void DrawLine(UILineRenderer lineRenderer, Vector2[] path, bool isActive, string debugName, Vector2 mapCenter, float scaleX, float scaleY)
     {
         if (lineRenderer == null) 
         {
@@ -153,23 +165,23 @@ public class GPSRouteDisplay : MonoBehaviour
 
         List<Vector2> uiPoints = new List<Vector2>();
 
-        float startUiX = (carPos2D.x - mapCenter.x) * mapScale;
-        float startUiY = (carPos2D.y - mapCenter.y) * mapScale;
+        float startUiX = (carPos2D.x - mapCenter.x) * scaleX;
+        float startUiY = (carPos2D.y - mapCenter.y) * scaleY;
         uiPoints.Add(new Vector2(startUiX, startUiY));
 
         for (int i = closestIndex; i < path.Length; i += 10)
         {
             Vector2 worldPosXZ = path[i];
-            float uiX = (worldPosXZ.x - mapCenter.x) * mapScale;
-            float uiY = (worldPosXZ.y - mapCenter.y) * mapScale;
+            float uiX = (worldPosXZ.x - mapCenter.x) * scaleX;
+            float uiY = (worldPosXZ.y - mapCenter.y) * scaleY;
             uiPoints.Add(new Vector2(uiX, uiY));
         }
         
         if (path.Length > 0)
         {
             Vector2 lastPos = path[path.Length - 1];
-            float uiX = (lastPos.x - mapCenter.x) * mapScale;
-            float uiY = (lastPos.y - mapCenter.y) * mapScale;
+            float uiX = (lastPos.x - mapCenter.x) * scaleX;
+            float uiY = (lastPos.y - mapCenter.y) * scaleY;
             uiPoints.Add(new Vector2(uiX, uiY));
         }
 
@@ -207,6 +219,29 @@ public class GPSRouteDisplay : MonoBehaviour
         return pos;
     }
 
+    // --- Public API for snapping clicks to road (used by WorldMapController) --- //
+
+    /// <summary>
+    /// Snaps a world XZ position to the nearest walkable road tile.
+    /// Called by WorldMapController when placing waypoint markers.
+    /// </summary>
+    public Vector2 SnapToNearestRoad(Vector2 worldPosXZ)
+    {
+        if (pathfindingConfig == null || SAP2DPathfinder.singleton == null)
+            return worldPosXZ;
+            
+        SAP_GridSource grid = SAP2DPathfinder.singleton.GetGrid(pathfindingConfig.GridIndex);
+        if (grid == null) return worldPosXZ;
+        
+        if (!gridInitialized)
+        {
+            grid.CalculateColliders();
+            gridInitialized = true;
+        }
+        
+        return GetNearestWalkablePosition(grid, worldPosXZ);
+    }
+
     // --- API FOR WORLD MAP CONTROLLER --- //
 
     public void SetLocalDestination(Vector3 worldPos)
@@ -222,10 +257,19 @@ public class GPSRouteDisplay : MonoBehaviour
     public void ClearLocalDestination()
     {
         hasLocalDestination = false;
+        currentLocalPath = null;
+        
         if (localLineRenderer != null)
         {
             localLineRenderer.points.Clear();
             localLineRenderer.SetVerticesDirty();
+        }
+        
+        // Also clear big map local line
+        if (bigMapLocalLineRenderer != null)
+        {
+            bigMapLocalLineRenderer.points.Clear();
+            bigMapLocalLineRenderer.SetVerticesDirty();
         }
     }
 
@@ -241,10 +285,26 @@ public class GPSRouteDisplay : MonoBehaviour
     public void ClearGlobalDestination()
     {
         hasGlobalDestination = false;
+        currentGlobalPath = null;
+        
         if (globalLineRenderer != null)
         {
             globalLineRenderer.points.Clear();
             globalLineRenderer.SetVerticesDirty();
         }
+        
+        // Also clear big map global line
+        if (bigMapGlobalLineRenderer != null)
+        {
+            bigMapGlobalLineRenderer.points.Clear();
+            bigMapGlobalLineRenderer.SetVerticesDirty();
+        }
     }
+    
+    // --- Accessors for WorldMapController / Minimap to query waypoint state --- //
+    
+    public bool HasLocalDestination() { return hasLocalDestination; }
+    public bool HasGlobalDestination() { return hasGlobalDestination; }
+    public Vector3 GetLocalDestinationPos() { return localDestinationPos; }
+    public Vector3 GetGlobalDestinationPos() { return globalDestinationPos; }
 }

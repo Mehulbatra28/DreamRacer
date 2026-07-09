@@ -1704,6 +1704,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapImage: {fileID: 1733774819}
   playerIcon: {fileID: 444529453}
+  localWaypointIconPrefab: {fileID: 1525413842625401780, guid: b7cbb9cc20d92c44b81292115f8c6e6f, type: 3}
+  globalWaypointIconPrefab: {fileID: 8531253148858115331, guid: 4f4889113e5d77d4088e8d8a8c1abf8e, type: 3}
   rotateWithPlayer: 1
   mapWorldCenter: {x: 460.92654, y: 550.02454}
   mapScale: 4.2264347
@@ -1953,8 +1955,10 @@ MonoBehaviour:
   globalWaypointPrefab: {fileID: 8531253148858115331, guid: 4f4889113e5d77d4088e8d8a8c1abf8e, type: 3}
   localPlayerIconPrefab: {fileID: 2302396333267945018, guid: f3c69fc9344c81f499431808290a7a94, type: 3}
   otherPlayerIconPrefab: {fileID: 893009221865735418, guid: 948c4bbc783cce941a38d3f8a5047ec2, type: 3}
-  gpsDisplay: {fileID: 2021270424}
   openMapAction: {fileID: -8852562041693628234, guid: 327a1ed44c335484d904923467be2d95, type: 3}
+  mapLeftClickAction: {fileID: 696144921172312484, guid: 327a1ed44c335484d904923467be2d95, type: 3}
+  mapRightClickAction: {fileID: -6228617024947370645, guid: 327a1ed44c335484d904923467be2d95, type: 3}
+  mapDeleteWaypointAction: {fileID: -7097523475691824095, guid: 327a1ed44c335484d904923467be2d95, type: 3}
 --- !u!134 &252728775
 PhysicsMaterial:
   m_ObjectHideFlags: 0
@@ -21331,11 +21335,9 @@ MonoBehaviour:
   playerCar: {fileID: 0}
   localLineRenderer: {fileID: 1020872966}
   globalLineRenderer: {fileID: 257381418}
-  worldMapReference: {fileID: 229964585}
   bigMapLocalLineRenderer: {fileID: 458734044}
   bigMapGlobalLineRenderer: {fileID: 1101593362}
   pathfindingConfig: {fileID: 11400000, guid: a3cf24e499d15664da17819bf48ce580, type: 2}
-  minimapReference: {fileID: 217793709}
 --- !u!222 &2021270426
 CanvasRenderer:
   m_ObjectHideFlags: 0
