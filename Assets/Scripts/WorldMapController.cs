@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class WorldMapController : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class WorldMapController : MonoBehaviour
     [Header("Player Tracking")]
     public GameObject localPlayerIconPrefab;
     public GameObject otherPlayerIconPrefab;
-    private System.Collections.Generic.Dictionary<Transform, RectTransform> activePlayerIcons = new System.Collections.Generic.Dictionary<Transform, RectTransform>();
+    private Dictionary<Transform, RectTransform> activePlayerIcons = new Dictionary<Transform, RectTransform>();
 
     // We will find this at runtime once the player spawns
     private PlayerWaypointTracker localPlayerTracker;
@@ -75,6 +76,12 @@ public class WorldMapController : MonoBehaviour
         if (mapCanvas != null)
         {
             mapCanvas.SetActive(false);
+        }
+        
+        // Also ensure mapImageRect is disabled on start so ghost icons don't appear
+        if (mapImageRect != null && mapImageRect.gameObject != mapCanvas)
+        {
+            mapImageRect.gameObject.SetActive(false);
         }
     }
 
@@ -251,6 +258,20 @@ public class WorldMapController : MonoBehaviour
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
             }
+
+            // Explicitly toggle mapImageRect just in case it is not a child of mapCanvas in the hierarchy.
+            // This prevents waypoint markers from remaining on screen as "ghosts" when the map is closed.
+            if (mapImageRect != null && mapImageRect.gameObject != mapCanvas)
+            {
+                mapImageRect.gameObject.SetActive(isActive);
+            }
+
+            // Hide the minimap overlay icons and player icon when the big map is open
+            // to prevent duplicate player arrows on screen
+            if (Minimap.Instance != null)
+            {
+                Minimap.Instance.SetOverlayVisible(!isActive);
+            }
         }
     }
 
@@ -274,8 +295,8 @@ public class WorldMapController : MonoBehaviour
         float bigMapHeight = mapImageRect.rect.height * mapImageRect.localScale.y;
         
         return new Vector2(
-            mapScale * (bigMapWidth / minimapWidth),
-            mapScale * (bigMapHeight / minimapHeight)
+            Minimap.Instance.mapScale * (bigMapWidth / minimapWidth),
+            Minimap.Instance.mapScale * (bigMapHeight / minimapHeight)
         );
     }
 
@@ -292,8 +313,8 @@ public class WorldMapController : MonoBehaviour
         RectTransformUtility.ScreenPointToLocalPointInRectangle(mapImageRect, screenPos, rootCanvas.worldCamera, out Vector2 localCursor);
         Debug.Log($"[WorldMapController] Clicked Local UI Coordinate: {localCursor}");
 
-        float worldX = (localCursor.x / bigMapScale.x) + mapWorldCenter.x;
-        float worldZ = (localCursor.y / bigMapScale.y) + mapWorldCenter.y;
+        float worldX = (localCursor.x / bigMapScale.x) + Minimap.Instance.mapWorldCenter.x;
+        float worldZ = (localCursor.y / bigMapScale.y) + Minimap.Instance.mapWorldCenter.y;
         
         Vector3 worldPos = new Vector3(worldX, 0, worldZ);
         Debug.Log($"[WorldMapController] Converted to World Coordinate: {worldPos}");
@@ -308,8 +329,8 @@ public class WorldMapController : MonoBehaviour
             snappedWorldPos = new Vector3(snapped2D.x, 0, snapped2D.y);
             
             // Recalculate UI position from the snapped world position
-            float snappedUiX = (snappedWorldPos.x - mapWorldCenter.x) * bigMapScale.x;
-            float snappedUiZ = (snappedWorldPos.z - mapWorldCenter.y) * bigMapScale.y;
+            float snappedUiX = (snappedWorldPos.x - Minimap.Instance.mapWorldCenter.x) * bigMapScale.x;
+            float snappedUiZ = (snappedWorldPos.z - Minimap.Instance.mapWorldCenter.y) * bigMapScale.y;
             snappedUIPos = new Vector2(snappedUiX, snappedUiZ);
             
             Debug.Log($"[WorldMapController] Snapped to road: {snappedWorldPos}, UI: {snappedUIPos}");
@@ -343,7 +364,7 @@ public class WorldMapController : MonoBehaviour
         
         if (currentLocalMarkerRect != null)
         {
-            currentLocalMarkerRect.anchoredPosition = uiPos;
+            currentLocalMarkerRect.anchoredPosition = ClampToMapRect(uiPos);
             currentLocalMarker.SetActive(true);
         }
 
@@ -373,13 +394,23 @@ public class WorldMapController : MonoBehaviour
         
         if (currentGlobalMarkerRect != null)
         {
-            currentGlobalMarkerRect.anchoredPosition = uiPos;
+            currentGlobalMarkerRect.anchoredPosition = ClampToMapRect(uiPos);
             currentGlobalMarker.SetActive(true);
         }
 
         if (localPlayerTracker != null)
         {
             localPlayerTracker.SetGlobalWaypoint(worldPos);
+            
+            // NEW: Clear all other players' global waypoints so there is only one!
+            PlayerWaypointTracker[] allTrackers = FindObjectsOfType<PlayerWaypointTracker>();
+            foreach (var t in allTrackers)
+            {
+                if (t != localPlayerTracker)
+                {
+                    t.RpcClearWaypoint();
+                }
+            }
         }
         
         if (GPSRouteDisplay.Instance != null)
@@ -422,7 +453,7 @@ public class WorldMapController : MonoBehaviour
         PrometeoCarController[] allCars = FindObjectsOfType<PrometeoCarController>();
         
         // Track which cars we've seen this frame to remove old ones
-        System.Collections.Generic.HashSet<Transform> currentFramesCars = new System.Collections.Generic.HashSet<Transform>();
+        HashSet<Transform> currentFramesCars = new HashSet<Transform>();
 
         foreach (var car in allCars)
         {
@@ -463,10 +494,12 @@ public class WorldMapController : MonoBehaviour
                 if (iconRect != null)
                 {
                     // Use the correct big map scale (not raw mapScale which is calibrated for minimap)
-                    float uiX = (carTransform.position.x - mapWorldCenter.x) * bigMapScale.x;
-                    float uiY = (carTransform.position.z - mapWorldCenter.y) * bigMapScale.y;
+                    float uiX = (carTransform.position.x - Minimap.Instance.mapWorldCenter.x) * bigMapScale.x;
+                    float uiY = (carTransform.position.z - Minimap.Instance.mapWorldCenter.y) * bigMapScale.y;
                     
-                    iconRect.anchoredPosition = new Vector2(uiX, uiY);
+                    // Clamp icon position to stay within the map image bounds
+                    Vector2 clampedPos = ClampToMapRect(new Vector2(uiX, uiY));
+                    iconRect.anchoredPosition = clampedPos;
                     
                     // Rotate icon to match car's rotation (assuming top-down view)
                     iconRect.localEulerAngles = new Vector3(0, 0, -carTransform.eulerAngles.y + 90f);
@@ -475,7 +508,7 @@ public class WorldMapController : MonoBehaviour
         }
 
         // Cleanup cars that disconnected or were destroyed
-        System.Collections.Generic.List<Transform> keysToRemove = new System.Collections.Generic.List<Transform>();
+        List<Transform> keysToRemove = new List<Transform>();
         foreach (var key in activePlayerIcons.Keys)
         {
             if (key == null || !currentFramesCars.Contains(key))
@@ -489,18 +522,73 @@ public class WorldMapController : MonoBehaviour
         {
             activePlayerIcons.Remove(key);
         }
+        
+        // --- NEW: Poll for the single active global waypoint ---
+        bool foundGlobalWaypoint = false;
+        Vector3 activeGlobalWaypoint = Vector3.zero;
+        
+        // Find if ANY player has an active global waypoint
+        PlayerWaypointTracker[] allTrackers = FindObjectsOfType<PlayerWaypointTracker>();
+        foreach (var t in allTrackers)
+        {
+            if (t.IsGlobalWaypointActive)
+            {
+                foundGlobalWaypoint = true;
+                activeGlobalWaypoint = t.GlobalWaypoint;
+                break; // Just take the first active one we find
+            }
+        }
+        
+        // If someone other than us set it, update our UI to show it
+        if (foundGlobalWaypoint)
+        {
+            // Only force update if the map is open and we need to draw the marker
+            if (mapImageRect != null && mapImageRect.gameObject.activeInHierarchy)
+            {
+                float uiX = (activeGlobalWaypoint.x - Minimap.Instance.mapWorldCenter.x) * bigMapScale.x;
+                float uiY = (activeGlobalWaypoint.z - Minimap.Instance.mapWorldCenter.y) * bigMapScale.y;
+                Vector2 uiPos = new Vector2(uiX, uiY);
+                
+                if (currentGlobalMarker == null && globalWaypointPrefab != null)
+                {
+                    currentGlobalMarker = Instantiate(globalWaypointPrefab, mapImageRect);
+                    currentGlobalMarkerRect = currentGlobalMarker.transform as RectTransform;
+                    if (currentGlobalMarkerRect != null)
+                    {
+                        currentGlobalMarkerRect.anchorMin = new Vector2(0.5f, 0.5f);
+                        currentGlobalMarkerRect.anchorMax = new Vector2(0.5f, 0.5f);
+                        currentGlobalMarkerRect.pivot = new Vector2(0.5f, 0.5f);
+                        currentGlobalMarkerRect.sizeDelta = new Vector2(30f, 30f);
+                        currentGlobalMarkerRect.localScale = Vector3.one;
+                    }
+                }
+                
+                if (currentGlobalMarkerRect != null)
+                {
+                    currentGlobalMarkerRect.anchoredPosition = ClampToMapRect(uiPos);
+                    currentGlobalMarker.SetActive(true);
+                }
+            }
+            
+            if (GPSRouteDisplay.Instance != null)
+            {
+                GPSRouteDisplay.Instance.SetGlobalDestination(activeGlobalWaypoint);
+            }
+        }
+        else
+        {
+            // No one has an active global waypoint, hide it
+            if (currentGlobalMarker != null)
+            {
+                currentGlobalMarker.SetActive(false);
+            }
+            if (GPSRouteDisplay.Instance != null)
+            {
+                GPSRouteDisplay.Instance.ClearGlobalDestination();
+            }
+        }
     }
 
-    public void DisplayOtherPlayerGlobalWaypoint(Vector3 worldPos, string playerName)
-    {
-        Vector2 bigMapScale = GetBigMapScale();
-        float uiX = (worldPos.x - mapWorldCenter.x) * bigMapScale.x;
-        float uiY = (worldPos.z - mapWorldCenter.y) * bigMapScale.y;
-        Vector2 uiPos = new Vector2(uiX, uiY);
-        
-        // Placeholder for instantiating markers for other players.
-    }
-    
     // --- Public accessors for Minimap to show waypoint icons --- //
     
     public bool HasLocalWaypoint()
@@ -525,5 +613,22 @@ public class WorldMapController : MonoBehaviour
         if (GPSRouteDisplay.Instance != null && GPSRouteDisplay.Instance.HasGlobalDestination())
             return GPSRouteDisplay.Instance.GetGlobalDestinationPos();
         return Vector3.zero;
+    }
+
+    /// <summary>
+    /// Clamps a UI position (relative to mapImageRect center) so it stays within the map image bounds.
+    /// Prevents icons from appearing outside the visible map area.
+    /// </summary>
+    private Vector2 ClampToMapRect(Vector2 uiPos)
+    {
+        if (mapImageRect == null) return uiPos;
+        
+        float halfWidth = mapImageRect.rect.width * 0.5f;
+        float halfHeight = mapImageRect.rect.height * 0.5f;
+        
+        float clampedX = Mathf.Clamp(uiPos.x, -halfWidth, halfWidth);
+        float clampedY = Mathf.Clamp(uiPos.y, -halfHeight, halfHeight);
+        
+        return new Vector2(clampedX, clampedY);
     }
 }

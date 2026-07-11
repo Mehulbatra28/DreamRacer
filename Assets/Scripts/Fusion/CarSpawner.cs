@@ -39,18 +39,24 @@ public class CarSpawner : MonoBehaviour, INetworkRunnerCallbacks
             Vector3 spawnPosition = new Vector3(player.PlayerId * 5f, 2f, 0f); 
             Quaternion spawnRotation = Quaternion.identity;
 
-            // Check if we have a saved position from a previous session
-            bool useSavedPosition = false;
-
-            if (PlayerPrefs.HasKey("LastPosX"))
+            if (spawnPoints != null && spawnPoints.Length > 0)
             {
-                spawnPosition = new Vector3(
+                // ALWAYS use assigned spawn points first (ensures unique positions in multiplayer)
+                int spawnIndex = player.PlayerId % spawnPoints.Length;
+                spawnPosition = spawnPoints[spawnIndex].position;
+                spawnRotation = spawnPoints[spawnIndex].rotation;
+                Debug.Log($"[CarSpawner] Using spawn point {spawnIndex} for player {player.PlayerId}");
+            }
+            else if (PlayerPrefs.HasKey("LastPosX"))
+            {
+                // No spawn points assigned — try to restore last saved position (single-player fallback)
+                Vector3 savedPos = new Vector3(
                     PlayerPrefs.GetFloat("LastPosX"),
                     PlayerPrefs.GetFloat("LastPosY"),
                     PlayerPrefs.GetFloat("LastPosZ")
                 );
                 
-                spawnRotation = new Quaternion(
+                Quaternion savedRot = new Quaternion(
                     PlayerPrefs.GetFloat("LastRotX"),
                     PlayerPrefs.GetFloat("LastRotY"),
                     PlayerPrefs.GetFloat("LastRotZ"),
@@ -60,22 +66,16 @@ public class CarSpawner : MonoBehaviour, INetworkRunnerCallbacks
                 // Check if the car is upside down. 
                 // We calculate the car's "Up" direction based on its rotation and compare it to the world's "Up".
                 // If the dot product is greater than 0, it means it's mostly upright.
-                if (Vector3.Dot(spawnRotation * Vector3.up, Vector3.up) > 0f)
+                if (Vector3.Dot(savedRot * Vector3.up, Vector3.up) > 0f)
                 {
-                    useSavedPosition = true;
+                    spawnPosition = savedPos;
+                    spawnRotation = savedRot;
+                    Debug.Log("[CarSpawner] Using saved position (no spawn points assigned).");
                 }
                 else
                 {
-                    Debug.Log("Saved position was upside down! Falling back to default spawn.");
+                    Debug.Log("[CarSpawner] Saved position was upside down! Using default spawn.");
                 }
-            }
-            
-            if (!useSavedPosition && spawnPoints != null && spawnPoints.Length > 0)
-            {
-                // Wrap around safely if there are more players than spawn points
-                int spawnIndex = player.PlayerId % spawnPoints.Length;
-                spawnPosition = spawnPoints[spawnIndex].position;
-                spawnRotation = spawnPoints[spawnIndex].rotation;
             }
 
             NetworkObject networkCar = runner.Spawn(carPrefab, spawnPosition, spawnRotation, player);

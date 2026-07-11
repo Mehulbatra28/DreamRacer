@@ -36,6 +36,12 @@ public class PlayerWaypointTracker : NetworkBehaviour
          }
     }
 
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RpcClearWaypoint()
+    {
+        IsGlobalWaypointActive = false;
+    }
+
     public override void Render()
     {
         foreach (var change in _changeDetector.DetectChanges(this))
@@ -51,13 +57,7 @@ public class PlayerWaypointTracker : NetworkBehaviour
     {
         if (IsGlobalWaypointActive)
         {
-            // 1. Tell WorldMapController to show it on the map (for other players)
-            if (!HasInputAuthority && WorldMapController.Instance != null)
-            {
-                WorldMapController.Instance.DisplayOtherPlayerGlobalWaypoint(GlobalWaypoint, Object.Id.ToString());
-            }
-
-            // 2. Spawn/Move 3D World Marker
+            // 3. Spawn/Move 3D World Marker
             if (globalWaypoint3DPrefab != null)
             {
                 if (current3DMarker == null)
@@ -73,7 +73,7 @@ public class PlayerWaypointTracker : NetworkBehaviour
         }
         else
         {
-            // Hide markers
+            // Hide marker
             if (current3DMarker != null)
             {
                 current3DMarker.SetActive(false);
