@@ -156,6 +156,31 @@ public class PrometeoCarController : NetworkBehaviour
       [Networked] public float NetWheelRPM { get; set; }
       [Networked] public float NetSteeringAngle { get; set; }
 
+      // Race freeze state — prevents all input and movement during countdown
+      private bool isFrozen = false;
+
+      /// <summary>
+      /// Freezes or unfreezes the car. Used by RaceManager during countdown.
+      /// When frozen, the car cannot move or accept input.
+      /// </summary>
+      public void SetFrozen(bool frozen)
+      {
+          isFrozen = frozen;
+          if (carRigidbody != null)
+          {
+              if (frozen)
+              {
+                  carRigidbody.linearVelocity = Vector3.zero;
+                  carRigidbody.angularVelocity = Vector3.zero;
+                  carRigidbody.constraints = RigidbodyConstraints.FreezeAll;
+              }
+              else
+              {
+                  carRigidbody.constraints = RigidbodyConstraints.None;
+              }
+          }
+      }
+
     void Awake()
     {
         controls = new CarControls();
@@ -342,6 +367,12 @@ public class PrometeoCarController : NetworkBehaviour
     void FixedUpdate()
     {
       if (!HasStateAuthority)
+      {
+        return;
+      }
+
+      // If the car is frozen (e.g. race countdown), skip all input and physics
+      if (isFrozen)
       {
         return;
       }

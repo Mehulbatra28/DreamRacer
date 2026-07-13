@@ -90,12 +90,12 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
     ""maps"": [
         {
             ""name"": ""Driving"",
-            ""id"": ""50abb68b-0f10-4cee-903d-109cb571366b"",
+            ""id"": ""17f886a6-fe86-4fcc-adad-3c347c56ecfa"",
             ""actions"": [
                 {
                     ""name"": ""Accelerate"",
                     ""type"": ""Button"",
-                    ""id"": ""7c84e745-25c4-42e4-b8d4-084f15ef745c"",
+                    ""id"": ""5cd34047-c781-48b8-b6ae-210f52f563fd"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -104,7 +104,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Steer"",
                     ""type"": ""Value"",
-                    ""id"": ""e2cd137f-700f-4cd9-ab48-0a0027ad824d"",
+                    ""id"": ""a93bbffc-3d5d-45ff-8e1d-f2087d799ee2"",
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -113,7 +113,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Reverse"",
                     ""type"": ""Button"",
-                    ""id"": ""2cc53e11-f87d-4c70-96af-8559f53bc90e"",
+                    ""id"": ""473f7a22-9352-48ff-b8e3-a5d9bab86b0f"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -122,7 +122,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""HandBrake"",
                     ""type"": ""Button"",
-                    ""id"": ""0bdefc66-54fd-4acd-9c67-2e5b40782690"",
+                    ""id"": ""04650b60-6228-4a3a-8b58-99a97b146827"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -131,7 +131,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""ShiftUp"",
                     ""type"": ""Button"",
-                    ""id"": ""a1b2c3d4-e5f6-7890-abcd-ef1234567890"",
+                    ""id"": ""bfae5193-cc3e-44a5-baee-c506a430ade0"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -140,7 +140,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""ShiftDown"",
                     ""type"": ""Button"",
-                    ""id"": ""b2c3d4e5-f6a7-8901-bcde-f12345678901"",
+                    ""id"": ""044bc76f-4f3f-419c-9023-f2aa73daff15"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -149,7 +149,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Clutch"",
                     ""type"": ""Button"",
-                    ""id"": ""c3d4e5f6-a7b8-9012-cdef-012345678902"",
+                    ""id"": ""d8a9d94c-5e36-4fe1-b924-6adde0f469ec"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -158,7 +158,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""OpenMap"",
                     ""type"": ""Button"",
-                    ""id"": ""557e95fc-a98f-404e-99f4-31b1efc3ec4a"",
+                    ""id"": ""b8a1f789-52d1-42cc-9b18-ced1fb6d5d6f"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -167,7 +167,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""MapLeftClick"",
                     ""type"": ""Button"",
-                    ""id"": ""a1b2c3d4-0001-0001-0001-000000000001"",
+                    ""id"": ""40118980-de76-4765-8e6a-ddf2f6baefde"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -176,7 +176,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""MapRightClick"",
                     ""type"": ""Button"",
-                    ""id"": ""a1b2c3d4-0001-0001-0001-000000000002"",
+                    ""id"": ""80655ac9-85dc-4115-a2e8-146640f35258"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -185,7 +185,25 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""MapDeleteWaypoint"",
                     ""type"": ""Button"",
-                    ""id"": ""a1b2c3d4-0001-0001-0001-000000000003"",
+                    ""id"": ""d487b823-16fa-4bdf-9ee8-ab7558a04739"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Accept"",
+                    ""type"": ""Button"",
+                    ""id"": ""5842d89e-6fcd-4e41-b4a8-703886f6d37e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Reject"",
+                    ""type"": ""Button"",
+                    ""id"": ""c39e7145-2371-4bb7-968a-c62061ed04fa"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -195,7 +213,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""5aea8bed-663c-457f-937d-357cabebf0f6"",
+                    ""id"": ""c4be7449-078f-48e1-9991-43146d6c3482"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -206,7 +224,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""728d8a5d-bcec-4edb-b86c-0c7e50206880"",
+                    ""id"": ""aeadf429-4d77-4511-a069-f4bcdb2309fb"",
                     ""path"": ""<DualShockGamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -217,7 +235,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""7508afe7-4b4b-48f6-82a7-a47e9ca36c94"",
+                    ""id"": ""98797f22-2ca1-419c-98b2-4eb907b836f0"",
                     ""path"": ""<XInputController>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -228,7 +246,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""e8791758-2c9c-4fc7-ac8a-d9da211f2ef9"",
+                    ""id"": ""ce9a6856-f1cd-46e5-afc8-87d72f7803f1"",
                     ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -238,8 +256,8 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""1D Axis"",
-                    ""id"": ""d8d2081a-942b-43c5-a622-039e2915ca14"",
+                    ""name"": ""1DAxis"",
+                    ""id"": ""5b63818c-ef76-4fd5-8769-83ef245f0d3a"",
                     ""path"": ""1DAxis"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -250,7 +268,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""negative"",
-                    ""id"": ""051f9dd3-6ce1-4409-9dd5-3f7925fdad8b"",
+                    ""id"": ""e866a00b-5567-4fcd-ba02-be4bf65abc83"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -261,7 +279,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""positive"",
-                    ""id"": ""44c8ce23-90a2-437e-8c52-baadaf3fde49"",
+                    ""id"": ""f58c62a1-bbec-405c-bbf0-c744cb2c79a7"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -271,74 +289,19 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""Negative"",
-                    ""id"": ""f9b9b95d-2d68-474e-9073-73b66f4cba57"",
-                    ""path"": ""<DualShockGamepad>/leftStick/left"",
+                    ""name"": """",
+                    ""id"": ""3505eba4-ec2e-45c5-b2b5-f38abde5b948"",
+                    ""path"": ""<Gamepad>/leftStick/x"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Steer"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Positive"",
-                    ""id"": ""452dcb55-241c-4c2a-9b0a-c166824f382b"",
-                    ""path"": ""<DualShockGamepad>/leftStick/right"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Steer"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Negative"",
-                    ""id"": ""7082f147-7a6e-4948-9064-90ed72641d53"",
-                    ""path"": ""<XInputController>/leftStick/left"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Steer"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Positive"",
-                    ""id"": ""aeb8d47b-025c-4b7d-a11f-e59b274d8747"",
-                    ""path"": ""<XInputController>/leftStick/right"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Steer"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Negative"",
-                    ""id"": ""7f1f4b3b-3774-4a63-9c60-a7c2a415097a"",
-                    ""path"": ""<Gamepad>/leftStick/left"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Steer"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Positive"",
-                    ""id"": ""8a734fed-7815-407b-b816-6685d179e1a4"",
-                    ""path"": ""<Gamepad>/leftStick/right"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Steer"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
+                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""e9ad372d-f18b-4ff8-805d-d68a4463a441"",
+                    ""id"": ""7fe8e7be-b397-425c-ab58-39a7d0fa6555"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -349,7 +312,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""734a2b6d-cce9-4702-9e9d-0e3a42e82a77"",
+                    ""id"": ""41250f7b-1336-4ab6-8c59-ea9ab23e4af4"",
                     ""path"": ""<DualShockGamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -360,7 +323,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""a7c1d4f8-eb40-4054-bbc8-5ebb71c63ca8"",
+                    ""id"": ""b0c6fc34-479f-4f31-af2d-f4a9ab0fc611"",
                     ""path"": ""<XInputController>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -371,7 +334,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""ef82b4ba-7e7f-4f55-ad9d-d20b356c7be7"",
+                    ""id"": ""a3d43753-edbd-4589-90e4-9e50c9e95afa"",
                     ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -382,7 +345,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""e7b0c8d1-5f3a-4a2b-9e4c-1d2f3a4b5c6d"",
+                    ""id"": ""f721de20-131a-4ece-80e6-027087f802be"",
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -393,7 +356,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""bf4a9c05-184d-4280-ba54-75f478c783a1"",
+                    ""id"": ""c7317acb-255c-40ce-a0c2-780941b96753"",
                     ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -404,7 +367,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""dd45a282-4557-4885-9d1c-ea78226327d8"",
+                    ""id"": ""d0720566-5640-4474-b0b1-1252ae300cc6"",
                     ""path"": ""<XInputController>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -415,18 +378,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b1698afc-b6e7-40c8-9c3c-16c3c5b90065"",
-                    ""path"": ""<DualShockGamepad>/buttonSouth"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""HandBrake"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""d4e5f6a7-b8c9-0123-def0-123456789abc"",
+                    ""id"": ""111bd583-ac70-4241-9c8d-b82ba79962eb"",
                     ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -437,7 +389,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""e5f6a7b8-c9d0-1234-ef01-23456789abcd"",
+                    ""id"": ""1a40fe4c-f91a-45cf-ad8c-91bc4e7b25dd"",
                     ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -448,7 +400,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""f6a7b8c9-d0e1-2345-f012-3456789abcde"",
+                    ""id"": ""94fac863-cbd7-426b-9ce8-35ac6d387899"",
                     ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -459,7 +411,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""a7b8c9d0-e1f2-3456-0123-456789abcdef"",
+                    ""id"": ""75096250-0ed4-47d3-beb5-388122d70c59"",
                     ""path"": ""<Gamepad>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -470,7 +422,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b8c9d0e1-f2a3-4567-1234-56789abcdef0"",
+                    ""id"": ""2489bf37-22e5-4c54-9a56-208bfb6edacc"",
                     ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -481,7 +433,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""e0566438-ec65-4b86-9543-196b8f51fe53"",
+                    ""id"": ""cd909fc2-4162-4797-8c77-0fe579db7724"",
                     ""path"": ""<DualShockGamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -492,18 +444,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""d64eb054-e17e-4e5f-81ab-df13342d2634"",
-                    ""path"": ""<Gamepad>/buttonEast"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Clutch"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""11f90b81-981e-4c86-8eb4-3888da4e0a4b"",
+                    ""id"": ""9f98ac28-4f73-45c8-9967-17337c689e96"",
                     ""path"": ""<XInputController>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -514,7 +455,18 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""2711ddac-3c3d-4cf6-831a-4027611bbb07"",
+                    ""id"": ""9ef8567e-eb17-47d0-9f2f-4dacc6a3926e"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Clutch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d4e5e820-b3f4-467f-82e5-eeb12c391d68"",
                     ""path"": ""<Keyboard>/m"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -525,7 +477,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""6c3f6c4d-af5f-4072-84f9-b63e03ab08ba"",
+                    ""id"": ""9310d451-0d4a-446f-8059-7d33a13b332f"",
                     ""path"": ""<DualShockGamepad>/touchpadButton"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -536,7 +488,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""9c11316d-11ab-415f-a500-560e6ffde271"",
+                    ""id"": ""05a45648-20af-4ae1-b8df-2e3994b0401e"",
                     ""path"": ""<Gamepad>/select"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -547,7 +499,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b1b2c3d4-0001-0001-0001-000000000011"",
+                    ""id"": ""4e5838fa-9230-42f1-8621-f2b6044307d3"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -558,7 +510,7 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b1b2c3d4-0001-0001-0001-000000000012"",
+                    ""id"": ""e8e384f6-9e2a-4cc1-b38d-eabf995afa8f"",
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -569,12 +521,56 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b1b2c3d4-0001-0001-0001-000000000013"",
+                    ""id"": ""663dbdce-9a5a-4a68-9695-907a17d02e01"",
                     ""path"": ""<Mouse>/middleButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""MapDeleteWaypoint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0dd88abf-b75e-44a0-adbe-15b0a32c1c07"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Accept"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""34c4385e-eb9b-47d4-819e-1e0ca70ea85e"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Accept"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0aa56e69-02f2-4410-99ab-d388f7ae26f8"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reject"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""11bc4949-d2bd-46ab-855e-4d2de272cfb5"",
+                    ""path"": ""<Keyboard>/backspace"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reject"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -596,6 +592,8 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
         m_Driving_MapLeftClick = m_Driving.FindAction("MapLeftClick", throwIfNotFound: true);
         m_Driving_MapRightClick = m_Driving.FindAction("MapRightClick", throwIfNotFound: true);
         m_Driving_MapDeleteWaypoint = m_Driving.FindAction("MapDeleteWaypoint", throwIfNotFound: true);
+        m_Driving_Accept = m_Driving.FindAction("Accept", throwIfNotFound: true);
+        m_Driving_Reject = m_Driving.FindAction("Reject", throwIfNotFound: true);
     }
 
     ~@CarControls()
@@ -687,6 +685,8 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Driving_MapLeftClick;
     private readonly InputAction m_Driving_MapRightClick;
     private readonly InputAction m_Driving_MapDeleteWaypoint;
+    private readonly InputAction m_Driving_Accept;
+    private readonly InputAction m_Driving_Reject;
     /// <summary>
     /// Provides access to input actions defined in input action map "Driving".
     /// </summary>
@@ -742,6 +742,14 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Driving/MapDeleteWaypoint".
         /// </summary>
         public InputAction @MapDeleteWaypoint => m_Wrapper.m_Driving_MapDeleteWaypoint;
+        /// <summary>
+        /// Provides access to the underlying input action "Driving/Accept".
+        /// </summary>
+        public InputAction @Accept => m_Wrapper.m_Driving_Accept;
+        /// <summary>
+        /// Provides access to the underlying input action "Driving/Reject".
+        /// </summary>
+        public InputAction @Reject => m_Wrapper.m_Driving_Reject;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -801,6 +809,12 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
             @MapDeleteWaypoint.started += instance.OnMapDeleteWaypoint;
             @MapDeleteWaypoint.performed += instance.OnMapDeleteWaypoint;
             @MapDeleteWaypoint.canceled += instance.OnMapDeleteWaypoint;
+            @Accept.started += instance.OnAccept;
+            @Accept.performed += instance.OnAccept;
+            @Accept.canceled += instance.OnAccept;
+            @Reject.started += instance.OnReject;
+            @Reject.performed += instance.OnReject;
+            @Reject.canceled += instance.OnReject;
         }
 
         /// <summary>
@@ -845,6 +859,12 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
             @MapDeleteWaypoint.started -= instance.OnMapDeleteWaypoint;
             @MapDeleteWaypoint.performed -= instance.OnMapDeleteWaypoint;
             @MapDeleteWaypoint.canceled -= instance.OnMapDeleteWaypoint;
+            @Accept.started -= instance.OnAccept;
+            @Accept.performed -= instance.OnAccept;
+            @Accept.canceled -= instance.OnAccept;
+            @Reject.started -= instance.OnReject;
+            @Reject.performed -= instance.OnReject;
+            @Reject.canceled -= instance.OnReject;
         }
 
         /// <summary>
@@ -962,5 +982,19 @@ public partial class @CarControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMapDeleteWaypoint(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Accept" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAccept(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Reject" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnReject(InputAction.CallbackContext context);
     }
 }
